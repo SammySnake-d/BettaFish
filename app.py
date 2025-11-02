@@ -748,9 +748,10 @@ def get_config():
             'config': config_info
         })
     except Exception as e:
+        print(f"获取配置失败: {e}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': '获取配置失败：发生意外错误'
         }), 500
 
 @app.route('/api/config', methods=['POST'])
@@ -879,9 +880,10 @@ def save_config():
             'updates': component_updates
         })
     except Exception as e:
+        print(f"保存配置失败: {e}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': '保存配置失败：发生意外错误'
         }), 500
 
 @app.route('/api/config/backup/webdav', methods=['POST'])
@@ -920,9 +922,10 @@ def backup_to_webdav():
             'message': message
         })
     except Exception as e:
+        print(f"WebDAV备份失败: {e}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'WebDAV备份失败：发生意外错误'
         }), 500
 
 @app.route('/api/config/restore/webdav', methods=['POST'])
@@ -961,9 +964,10 @@ def restore_from_webdav():
             'message': message
         })
     except Exception as e:
+        print(f"WebDAV恢复失败: {e}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'WebDAV恢复失败：发生意外错误'
         }), 500
 
 @app.route('/api/config/list/webdav', methods=['POST'])
@@ -997,9 +1001,10 @@ def list_webdav_backups():
             'message': message
         })
     except Exception as e:
+        print(f"WebDAV列表失败: {e}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'WebDAV列表失败：发生意外错误'
         }), 500
 
 @socketio.on('connect')

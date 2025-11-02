@@ -41,6 +41,11 @@ class WebDAVBackupManager:
         """连接到WebDAV服务器"""
         if not WEBDAV_AVAILABLE:
             return False
+
+        if not self.webdav_url.startswith('https://'):
+            print("WebDAV连接失败: URL必须使用HTTPS")
+            self.is_connected = False
+            return False
             
         try:
             options = {
@@ -64,7 +69,7 @@ class WebDAVBackupManager:
             return True
             
         except Exception as e:
-            print(f"WebDAV连接失败: {e}")
+            print(f"WebDAV连接失败: 发生意外错误")
             self.is_connected = False
             return False
     
@@ -117,7 +122,8 @@ class WebDAVBackupManager:
                     os.remove(tmp_path)
                     
         except Exception as e:
-            return False, f"备份失败: {str(e)}"
+            print(f"WebDAV备份失败: {e}")
+            return False, "备份失败：发生意外错误"
     
     def load_config_from_webdav(self, filename: str) -> Tuple[bool, Dict[str, Any], str]:
         """
@@ -164,7 +170,8 @@ class WebDAVBackupManager:
                     os.remove(tmp_path)
                     
         except Exception as e:
-            return False, {}, f"加载失败: {str(e)}"
+            print(f"WebDAV加载失败: {e}")
+            return False, {}, "加载失败：发生意外错误"
     
     def list_backups(self) -> Tuple[bool, list, str]:
         """
@@ -202,7 +209,8 @@ class WebDAVBackupManager:
             return True, file_list, f"找到 {len(file_list)} 个备份文件"
             
         except Exception as e:
-            return False, [], f"列表失败: {str(e)}"
+            print(f"WebDAV列表失败: {e}")
+            return False, [], "列表失败：发生意外错误"
     
     def delete_backup(self, filename: str) -> Tuple[bool, str]:
         """
@@ -228,7 +236,8 @@ class WebDAVBackupManager:
             return True, f"备份已删除: {filename}"
             
         except Exception as e:
-            return False, f"删除失败: {str(e)}"
+            print(f"WebDAV删除失败: {e}")
+            return False, "删除失败：发生意外错误"
 
 
 # 创建全局实例
@@ -269,7 +278,8 @@ def save_config_to_local(config_data: Dict[str, Any], filepath: str) -> Tuple[bo
         return True, f"配置已保存到: {filepath}"
         
     except Exception as e:
-        return False, f"保存失败: {str(e)}"
+            print(f"本地保存失败: {e}")
+            return False, "保存失败：发生意外错误"
 
 
 def load_config_from_local(filepath: str) -> Tuple[bool, Dict[str, Any], str]:
@@ -295,4 +305,5 @@ def load_config_from_local(filepath: str) -> Tuple[bool, Dict[str, Any], str]:
         return True, backup_data['config'], f"配置已从本地恢复: {filepath}"
         
     except Exception as e:
-        return False, {}, f"加载失败: {str(e)}"
+            print(f"本地加载失败: {e}")
+            return False, {}, "加载失败：发生意外错误"
