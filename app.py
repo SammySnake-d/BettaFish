@@ -16,6 +16,7 @@ import signal
 import atexit
 import requests
 import logging
+import importlib
 from pathlib import Path
 
 # 导入ReportEngine
@@ -578,6 +579,188 @@ def stop_forum_monitoring_api():
         return jsonify({'success': True, 'message': 'ForumEngine论坛已停止'})
     except Exception as e:
         return jsonify({'success': False, 'message': f'停止论坛失败: {str(e)}'})
+
+@app.route('/api/config', methods=['GET'])
+def get_config():
+    """获取配置信息"""
+    try:
+        config_module = importlib.import_module('config')
+        config_module = importlib.reload(config_module)
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'加载配置失败: {e}'})
+
+    config_data = {
+        'database': {
+            'host': getattr(config_module, 'DB_HOST', ''),
+            'port': getattr(config_module, 'DB_PORT', 3306),
+            'user': getattr(config_module, 'DB_USER', ''),
+            'password': getattr(config_module, 'DB_PASSWORD', ''),
+            'name': getattr(config_module, 'DB_NAME', ''),
+            'charset': getattr(config_module, 'DB_CHARSET', 'utf8mb4')
+        },
+        'engines': {
+            'insight': {
+                'api_key': getattr(config_module, 'INSIGHT_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'INSIGHT_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'INSIGHT_ENGINE_MODEL_NAME', '')
+            },
+            'media': {
+                'api_key': getattr(config_module, 'MEDIA_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'MEDIA_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'MEDIA_ENGINE_MODEL_NAME', '')
+            },
+            'query': {
+                'api_key': getattr(config_module, 'QUERY_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'QUERY_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'QUERY_ENGINE_MODEL_NAME', '')
+            },
+            'report': {
+                'api_key': getattr(config_module, 'REPORT_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'REPORT_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'REPORT_ENGINE_MODEL_NAME', '')
+            },
+            'forum_host': {
+                'api_key': getattr(config_module, 'FORUM_HOST_API_KEY', ''),
+                'base_url': getattr(config_module, 'FORUM_HOST_BASE_URL', ''),
+                'model_name': getattr(config_module, 'FORUM_HOST_MODEL_NAME', '')
+            },
+            'keyword_optimizer': {
+                'api_key': getattr(config_module, 'KEYWORD_OPTIMIZER_API_KEY', ''),
+                'base_url': getattr(config_module, 'KEYWORD_OPTIMIZER_BASE_URL', ''),
+                'model_name': getattr(config_module, 'KEYWORD_OPTIMIZER_MODEL_NAME', '')
+            }
+        },
+        'tools': {
+            'tavily_api_key': getattr(config_module, 'TAVILY_API_KEY', ''),
+            'bocha_api_key': getattr(config_module, 'BOCHA_WEB_SEARCH_API_KEY', '')
+        }
+    }
+
+    return jsonify({'success': True, 'config': config_data})
+
+
+@app.route('/api/config', methods=['POST'])
+def save_config():
+    """保存配置信息"""
+    try:
+        config_data = request.json or {}
+        if not config_data:
+            return jsonify({'success': False, 'error': '无效的配置数据'})
+
+        config_file = Path('config.py')
+        if not config_file.exists():
+            return jsonify({'success': False, 'error': '配置文件不存在'})
+
+        with open(config_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        def update_line(line, var_name, value, is_number=False):
+            if f'{var_name}' not in line:
+                return line
+            stripped = line.rstrip('\n')
+            lstripped = stripped.lstrip()
+            if not (lstripped.startswith(f'{var_name} ') or lstripped.startswith(f'{var_name}=')):
+                return line
+            prefix_whitespace = stripped[:len(stripped) - len(lstripped)]
+            eq_index = lstripped.find('=')
+            if eq_index == -1:
+                return line
+            before_eq = lstripped[:eq_index + 1]
+            after_eq = lstripped[eq_index + 1:]
+            comment = ''
+            if '#' in after_eq:
+                value_part, comment = after_eq.split('#', 1)
+                comment = '#' + comment
+            else:
+                value_part = after_eq
+            leading_len = len(value_part) - len(value_part.lstrip())
+            trailing_len = len(value_part) - len(value_part.rstrip())
+            leading = value_part[:leading_len] if leading_len > 0 else ' '
+            trailing = value_part[len(value_part) - trailing_len:] if trailing_len > 0 else ''
+            if is_number:
+                new_value = str(value)
+            else:
+                escaped_value = str(value).replace('\\', '\\\\').replace('"', '\\"')
+                new_value = f'"{escaped_value}"'
+            return f'{prefix_whitespace}{before_eq}{leading}{new_value}{trailing}{comment}\n'
+
+        db_conf = config_data.get('database', {})
+        engines_conf = config_data.get('engines', {})
+        tools_conf = config_data.get('tools', {})
+
+        port_value = db_conf.get('port', 3306)
+        try:
+            port_value = int(port_value)
+        except (TypeError, ValueError):
+            port_value = 3306
+
+        updated_lines = []
+        for line in lines:
+            updated_line = line
+
+            if db_conf:
+                updated_line = update_line(updated_line, 'DB_HOST', db_conf.get('host', ''))
+                updated_line = update_line(updated_line, 'DB_PORT', port_value, is_number=True)
+                updated_line = update_line(updated_line, 'DB_USER', db_conf.get('user', ''))
+                updated_line = update_line(updated_line, 'DB_PASSWORD', db_conf.get('password', ''))
+                updated_line = update_line(updated_line, 'DB_NAME', db_conf.get('name', ''))
+                updated_line = update_line(updated_line, 'DB_CHARSET', db_conf.get('charset', 'utf8mb4'))
+
+            if engines_conf:
+                insight_conf = engines_conf.get('insight', {})
+                if insight_conf:
+                    updated_line = update_line(updated_line, 'INSIGHT_ENGINE_API_KEY', insight_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'INSIGHT_ENGINE_BASE_URL', insight_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'INSIGHT_ENGINE_MODEL_NAME', insight_conf.get('model_name', ''))
+
+                media_conf = engines_conf.get('media', {})
+                if media_conf:
+                    updated_line = update_line(updated_line, 'MEDIA_ENGINE_API_KEY', media_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'MEDIA_ENGINE_BASE_URL', media_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'MEDIA_ENGINE_MODEL_NAME', media_conf.get('model_name', ''))
+
+                query_conf = engines_conf.get('query', {})
+                if query_conf:
+                    updated_line = update_line(updated_line, 'QUERY_ENGINE_API_KEY', query_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'QUERY_ENGINE_BASE_URL', query_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'QUERY_ENGINE_MODEL_NAME', query_conf.get('model_name', ''))
+
+                report_conf = engines_conf.get('report', {})
+                if report_conf:
+                    updated_line = update_line(updated_line, 'REPORT_ENGINE_API_KEY', report_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'REPORT_ENGINE_BASE_URL', report_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'REPORT_ENGINE_MODEL_NAME', report_conf.get('model_name', ''))
+
+                forum_conf = engines_conf.get('forum_host', {})
+                if forum_conf:
+                    updated_line = update_line(updated_line, 'FORUM_HOST_API_KEY', forum_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'FORUM_HOST_BASE_URL', forum_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'FORUM_HOST_MODEL_NAME', forum_conf.get('model_name', ''))
+
+                keyword_conf = engines_conf.get('keyword_optimizer', {})
+                if keyword_conf:
+                    updated_line = update_line(updated_line, 'KEYWORD_OPTIMIZER_API_KEY', keyword_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'KEYWORD_OPTIMIZER_BASE_URL', keyword_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'KEYWORD_OPTIMIZER_MODEL_NAME', keyword_conf.get('model_name', ''))
+
+            if tools_conf:
+                updated_line = update_line(updated_line, 'TAVILY_API_KEY', tools_conf.get('tavily_api_key', ''))
+                updated_line = update_line(updated_line, 'BOCHA_WEB_SEARCH_API_KEY', tools_conf.get('bocha_api_key', ''))
+
+            updated_lines.append(updated_line)
+
+        with open(config_file, 'w', encoding='utf-8') as f:
+            f.writelines(updated_lines)
+
+        importlib.invalidate_caches()
+        config_module = importlib.import_module('config')
+        importlib.reload(config_module)
+
+        return jsonify({'success': True, 'message': '配置已保存'})
+    except Exception as e:
+        logging.exception("保存配置失败")
+        return jsonify({'success': False, 'error': str(e)})
+
 
 @app.route('/api/forum/log')
 def get_forum_log():
