@@ -28,7 +28,17 @@ class DatabaseManager:
     def __init__(self):
         """初始化数据库管理器"""
         self.connection = None
+        self._auto_init_database()
         self.connect()
+    
+    def _auto_init_database(self):
+        """自动检查并初始化数据库"""
+        try:
+            from schema.auto_init_db import check_and_init_database
+            check_and_init_database(config, silent=True)
+        except Exception as e:
+            print(f"数据库自动初始化警告: {e}")
+            print("请确保数据库已正确初始化，或手动运行: python schema/init_database.py")
     
     def connect(self):
         """连接数据库"""
