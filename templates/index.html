@@ -109,8 +109,311 @@
             cursor: pointer;
         }
 
-        .upload-status {
+        /* 配置中心样式 */
+        .config-backdrop {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease;
+            z-index: 900;
+        }
+
+        .config-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .config-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 82vw;
+            max-width: 1100px;
+            max-height: 86vh;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 950;
+        }
+
+        .config-modal.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .config-header {
+            padding: 20px 28px;
+            border-bottom: 2px solid #000000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .config-title {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .config-subtitle {
+            font-size: 13px;
+            color: #555555;
+            margin-top: 6px;
+        }
+
+        .config-close {
+            border: none;
+            background: #000000;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        .config-close:hover {
+            background-color: #333333;
+        }
+
+        .config-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            padding: 0 28px 28px 28px;
+        }
+
+        .config-main-tabs {
+            display: flex;
+            border-bottom: 2px solid #000000;
+            margin-bottom: 18px;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .config-main-tab {
+            padding: 10px 18px;
+            border: none;
+            background-color: #f4f4f4;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #000000;
+            border-bottom: none;
+            transition: all 0.2s ease;
+        }
+
+        .config-main-tab.active {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .config-main-tab:not(.active):hover {
+            background-color: #e2e2e2;
+        }
+
+        .config-panels {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .config-panel {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .config-panel.active {
+            display: flex;
+        }
+
+        .config-subtabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .config-subtab {
+            padding: 8px 16px;
+            border: 2px solid #000000;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .config-subtab.active {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .config-subtab:not(.active):hover {
+            background-color: #f2f2f2;
+        }
+
+        .config-subpanels {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .config-subpanel {
+            display: none;
+        }
+
+        .config-subpanel.active {
+            display: block;
+        }
+
+        .config-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .config-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid #d8d8d8;
+            padding: 12px;
+            background-color: #fafafa;
+        }
+
+        .config-field label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .config-field input,
+        .config-field textarea,
+        .config-field select {
+            padding: 10px 12px;
+            border: 1px solid #b5b5b5;
+            background-color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .config-field input:focus,
+        .config-field textarea:focus,
+        .config-field select:focus {
+            border-color: #000000;
+        }
+
+        .config-note {
             font-size: 12px;
+            color: #666666;
+            line-height: 1.4;
+        }
+
+        .config-placeholder {
+            padding: 40px 20px;
+            border: 2px dashed #b5b5b5;
+            background-color: #fdfdfd;
+            text-align: center;
+            color: #666666;
+            line-height: 1.8;
+        }
+
+        .config-footer {
+            padding: 18px 28px;
+            border-top: 2px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .config-primary,
+        .config-secondary {
+            padding: 10px 24px;
+            border: 2px solid #000000;
+            background-color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .config-primary {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .config-primary:hover {
+            background-color: #333333;
+        }
+
+        .config-secondary:hover {
+            background-color: #f2f2f2;
+        }
+
+        .config-status {
+            font-size: 12px;
+            color: #666666;
+            min-height: 16px;
+        }
+
+        .config-status.success {
+            color: #2e7d32;
+        }
+
+        .config-status.error {
+            color: #c62828;
+        }
+
+        @media (max-width: 1024px) {
+            .config-modal {
+                width: 92vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .config-modal {
+                width: 96vw;
+                max-height: 90vh;
+            }
+
+            .config-header,
+            .config-body,
+            .config-footer {
+                padding: 16px;
+            }
+
+            .config-main-tabs {
+                gap: 6px;
+            }
+
+            .config-field {
+                padding: 10px;
+            }
+        }
+
+        .upload-status {
+
             margin-top: 10px;
             text-align: center;
             color: #666666;
@@ -745,205 +1048,22 @@
             color: #666;
             font-size: 14px;
         }
-
-        /* 配置模态框样式 */
-        .config-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .config-modal.show {
-            display: block;
-        }
-
-        .config-modal-content {
-            background-color: #ffffff;
-            margin: 2% auto;
-            padding: 0;
-            border: 3px solid #000000;
-            width: 90%;
-            max-width: 1200px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .config-modal-header {
-            padding: 20px;
-            background-color: #000000;
-            color: #ffffff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #000000;
-        }
-
-        .config-modal-header h2 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .config-close {
-            color: #ffffff;
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            background: none;
-            padding: 0;
-            line-height: 1;
-        }
-
-        .config-close:hover {
-            color: #cccccc;
-        }
-
-        .config-modal-body {
-            padding: 30px;
-        }
-
-        .config-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 2px solid #000000;
-            background-color: #f9f9f9;
-        }
-
-        .config-section h3 {
-            margin: 0 0 20px 0;
-            font-size: 20px;
-            border-bottom: 2px solid #000000;
-            padding-bottom: 10px;
-        }
-
-        .config-group {
-            margin-bottom: 25px;
-            padding: 15px;
-            background-color: #ffffff;
-            border: 1px solid #cccccc;
-        }
-
-        .config-group h4 {
-            margin: 0 0 15px 0;
-            font-size: 16px;
-            font-weight: bold;
-            color: #333333;
-        }
-
-        .config-field {
-            margin-bottom: 15px;
-        }
-
-        .config-field label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-            color: #333333;
-        }
-
-        .config-field input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #cccccc;
-            font-size: 14px;
-            font-family: 'Courier New', monospace;
-            box-sizing: border-box;
-        }
-
-        .config-field input:focus {
-            outline: none;
-            border-color: #000000;
-        }
-
-        .config-field input[type="password"] {
-            letter-spacing: 2px;
-        }
-
-        .config-modal-footer {
-            padding: 20px 30px;
-            background-color: #f5f5f5;
-            border-top: 2px solid #000000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .config-button {
-            padding: 12px 25px;
-            border: 2px solid #000000;
-            background-color: #000000;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .config-button:hover {
-            background-color: #333333;
-        }
-
-        .config-button.secondary {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        .config-button.secondary:hover {
-            background-color: #f0f0f0;
-        }
-
-        .config-info {
-            font-size: 12px;
-            color: #666666;
-            margin-top: 5px;
-        }
-
-        .config-status {
-            padding: 10px 15px;
-            border: 2px solid;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .config-status.success {
-            border-color: #4a6741;
-            background-color: #f0f5ed;
-            color: #4a6741;
-        }
-
-        .config-status.error {
-            border-color: #8b4513;
-            background-color: #fdf5e6;
-            color: #8b4513;
-        }
-
-        .config-button:hover {
-            background-color: #f0f0f0;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- 搜索框区域 -->
         <div class="search-section">
-            <div class="search-title">
-                微舆 - 致力于打造简洁通用的舆情分析平台
-                <button class="config-button" id="configButton" onclick="openConfigModal()" style="float: right; padding: 8px 15px; border: 2px solid #000000; background-color: #ffffff; color: #000000; cursor: pointer; font-size: 14px; font-weight: bold; transition: all 0.3s ease;">⚙️ 配置</button>
-            </div>
+            <div class="search-title">微舆 - 致力于打造简洁通用的舆情分析平台</div>
             <div class="search-box">
                 <input type="text" class="search-input" id="searchInput" placeholder="请输入要分析的内容...">
                 <button class="search-button" id="searchButton">开始</button>
                 <button class="upload-button" id="uploadButton">
                     上传模板
                     <input type="file" id="templateFileInput" accept=".md,.txt" title="上传自定义报告模板(支持 .md 和 .txt 文件)">
+                </button>
+                <button class="upload-button" id="configButton" style="border-left: 2px solid #000000;">
+                    ⚙️ 配置
                 </button>
             </div>
             <div class="upload-status" id="uploadStatus"></div>
@@ -1018,218 +1138,299 @@
     <!-- 消息提示 -->
     <div class="message" id="message"></div>
 
+    <!-- 配置模态框背景 -->
+    <div class="config-backdrop" id="configBackdrop"></div>
+
     <!-- 配置模态框 -->
-    <div class="config-modal" id="configModal" role="dialog" aria-modal="true" aria-labelledby="configModalTitle">
-        <div class="config-modal-content">
-            <div class="config-modal-header">
-                <h2 id="configModalTitle">配置与密钥管理</h2>
-                <button type="button" class="config-close" onclick="closeConfigModal()" aria-label="关闭配置窗口">×</button>
+    <div class="config-modal" id="configModal">
+        <div class="config-header">
+            <div>
+                <div class="config-title">系统配置</div>
+                <div class="config-subtitle">配置 LLM、数据库、检索工具等参数</div>
             </div>
-            <form id="configForm">
-                <div class="config-modal-body">
-                    <div id="configStatus" class="config-status" style="display: none;"></div>
+            <button class="config-close" id="configClose">✕</button>
+        </div>
 
-                    <div class="config-section">
-                        <h3>引擎 LLM 配置</h3>
-                        <p class="config-info">在这里配置各个引擎所使用的大语言模型服务的 API Key、Base URL 与模型名称。配置内容会保存在浏览器本地，刷新页面后自动生效。</p>
-                        <div id="engineConfigContainer"></div>
+        <div class="config-body">
+            <div class="config-main-tabs">
+                <button class="config-main-tab active" data-panel="engines">引擎 LLM 配置</button>
+                <button class="config-main-tab" data-panel="tools">检索与工具</button>
+                <button class="config-main-tab" data-panel="crawler">爬虫</button>
+                <button class="config-main-tab" data-panel="advanced">高级配置</button>
+                <button class="config-main-tab" data-panel="sentiment">情感分析</button>
+            </div>
+
+            <div class="config-panels">
+                <!-- 引擎 LLM 配置面板 -->
+                <div class="config-panel active" id="panel-engines">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="insight">Insight Engine</button>
+                        <button class="config-subtab" data-subpanel="media">Media Engine</button>
+                        <button class="config-subtab" data-subpanel="query">Query Engine</button>
+                        <button class="config-subtab" data-subpanel="report">Report Engine</button>
+                        <button class="config-subtab" data-subpanel="forum">Forum Host</button>
+                        <button class="config-subtab" data-subpanel="keyword">Keyword Optimizer</button>
                     </div>
-
-                    <div class="config-section">
-                        <h3>检索与工具配置</h3>
-                        <div class="config-group">
-                            <h4>Tavily 搜索</h4>
-                            <div class="config-field">
-                                <label for="tavilyApiKey">Tavily API Key</label>
-                                <input type="text" id="tavilyApiKey" name="tavily_api_key" placeholder="例如：tvly-xxxxxxxx">
-                                <div class="config-info">用于 Query Agent 的联网检索能力。</div>
+                    <div class="config-subpanels">
+                        <!-- Insight Engine -->
+                        <div class="config-subpanel active" id="subpanel-insight">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="insight_api_key" data-config="engines.insight.api_key" placeholder="输入 Insight Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="insight_base_url" data-config="engines.insight.base_url" placeholder="https://api.moonshot.cn/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="insight_model_name" data-config="engines.insight.model_name" placeholder="kimi-k2-0711-preview">
+                                </div>
                             </div>
-                        </div>
-                        <div class="config-group">
-                            <h4>Bocha Web Search</h4>
-                            <div class="config-field">
-                                <label for="bochaApiKey">Bocha API Key</label>
-                                <input type="text" id="bochaApiKey" name="bocha_api_key" placeholder="例如：sk-xxxxxxxx">
-                                <div class="config-info">用于 Media Agent 的网页搜索与多模态分析。</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="config-section">
-                        <h3>MindSpider 爬虫配置</h3>
-                        <div class="config-group">
-                            <h4>DeepSeek API</h4>
-                            <div class="config-field">
-                                <label for="mindspiderDeepseekApiKey">DeepSeek API Key</label>
-                                <input type="text" id="mindspiderDeepseekApiKey" name="mindspider_deepseek_api_key" placeholder="例如：sk-deepseek-xxxxxxxx">
-                                <div class="config-info">用于 MindSpider 爬虫的高级话题挖掘与关键词生成。如果留空，将自动沿用 Query Engine 的 DeepSeek 配置。</div>
-                            </div>
-                        </div>
-                        <p class="config-info">MindSpider 爬虫使用与主系统相同的数据库配置。数据库连接信息请在 config.py 或环境变量中配置。</p>
-                    </div>
-
-                    <div class="config-section">
-                        <h3>高级参数配置 ⚙️</h3>
-                        <div class="config-group">
-                            <h4>Query Engine 高级参数</h4>
-                            <div class="config-field">
-                                <label for="queryMaxReflections">反思轮次</label>
-                                <input type="number" id="queryMaxReflections" min="1" max="10" value="2">
-                                <div class="config-info">Query Agent 内部思考和优化的轮次。增加可提升质量，但耗时更长。</div>
-                            </div>
-                            <div class="config-field">
-                                <label for="queryMaxSearchResults">最大搜索结果数</label>
-                                <input type="number" id="queryMaxSearchResults" min="5" max="50" value="20">
-                                <div class="config-info">从搜索API获取的最大结果数量。</div>
-                            </div>
-                            <div class="config-field">
-                                <label for="queryMaxContentLength">最大内容长度</label>
-                                <input type="number" id="queryMaxContentLength" min="1000" max="100000" value="20000">
-                                <div class="config-info">单次处理的最大文本字符数。</div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 Kimi API，申请地址: <a href="https://platform.moonshot.cn/" target="_blank">https://platform.moonshot.cn/</a>
                             </div>
                         </div>
 
-                        <div class="config-group">
-                            <h4>Media Engine 高级参数</h4>
-                            <div class="config-field">
-                                <label for="mediaMaxReflections">反思轮次</label>
-                                <input type="number" id="mediaMaxReflections" min="1" max="10" value="2">
+                        <!-- Media Engine -->
+                        <div class="config-subpanel" id="subpanel-media">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="media_api_key" placeholder="输入 Media Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="media_base_url" placeholder="https://www.chataiapi.com/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="media_model_name" placeholder="gemini-2.5-pro">
+                                </div>
                             </div>
-                            <div class="config-field">
-                                <label for="mediaMaxParagraphs">最大段落数</label>
-                                <input type="number" id="mediaMaxParagraphs" min="1" max="20" value="5">
-                                <div class="config-info">生成报告的最大段落数量。</div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 Gemini API，申请地址: <a href="https://www.chataiapi.com/" target="_blank">https://www.chataiapi.com/</a>
                             </div>
                         </div>
 
-                        <div class="config-group">
-                            <h4>Insight Engine 高级参数</h4>
-                            <div class="config-field">
-                                <label for="insightMaxReflections">反思轮次</label>
-                                <input type="number" id="insightMaxReflections" min="1" max="10" value="3">
+                        <!-- Query Engine -->
+                        <div class="config-subpanel" id="subpanel-query">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="query_api_key" placeholder="输入 Query Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="query_base_url" placeholder="https://api.deepseek.com">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="query_model_name" placeholder="deepseek-reasoner">
+                                </div>
                             </div>
-                            <div class="config-field">
-                                <label for="insightSearchHotContentLimit">热点内容搜索限制</label>
-                                <input type="number" id="insightSearchHotContentLimit" min="10" max="500" value="100">
-                                <div class="config-info">从数据库获取热点内容的最大数量。</div>
-                            </div>
-                            <div class="config-field">
-                                <label for="insightGetCommentsLimit">评论获取限制</label>
-                                <input type="number" id="insightGetCommentsLimit" min="50" max="2000" value="500">
-                                <div class="config-info">每个话题获取的最大评论数。</div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 DeepSeek API，申请地址: <a href="https://www.deepseek.com/" target="_blank">https://www.deepseek.com/</a>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="config-section">
-                        <h3>情感分析配置 💬</h3>
-                        <div class="config-group">
-                            <div class="config-field">
-                                <label for="sentimentModelType">模型类型</label>
-                                <select id="sentimentModelType">
-                                    <option value="multilingual">多语言模型（推荐）</option>
-                                    <option value="bert">中文BERT模型</option>
-                                    <option value="qwen">Qwen情感模型</option>
-                                </select>
-                                <div class="config-info">根据部署环境选择合适的情感分析模型。</div>
+                        <!-- Report Engine -->
+                        <div class="config-subpanel" id="subpanel-report">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="report_api_key" placeholder="输入 Report Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="report_base_url" placeholder="https://www.chataiapi.com/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="report_model_name" placeholder="gemini-2.5-pro">
+                                </div>
                             </div>
-                            <div class="config-field">
-                                <label for="sentimentConfidenceThreshold">置信度阈值</label>
-                                <input type="number" id="sentimentConfidenceThreshold" step="0.05" min="0" max="1" value="0.8">
-                            </div>
-                            <div class="config-field">
-                                <label for="sentimentBatchSize">批处理大小</label>
-                                <input type="number" id="sentimentBatchSize" min="1" max="128" value="32">
-                            </div>
-                            <div class="config-field">
-                                <label for="sentimentMaxSequenceLength">最大序列长度</label>
-                                <input type="number" id="sentimentMaxSequenceLength" min="64" max="2048" value="512">
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 Gemini API，申请地址: <a href="https://www.chataiapi.com/" target="_blank">https://www.chataiapi.com/</a>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="config-section">
-                        <h3>数据库配置 🗄️</h3>
-                        <p class="config-info">配置 MySQL 数据库用于 Insight Engine 和 MindSpider 爬虫。如果不使用这两个功能，可以跳过此配置。</p>
-                        <div class="config-group">
-                            <div class="config-field">
-                                <label for="dbHost">数据库主机</label>
-                                <input type="text" id="dbHost" placeholder="例如：localhost 或 127.0.0.1">
-                                <div class="config-info">MySQL 数据库服务器地址</div>
+                        <!-- Forum Host -->
+                        <div class="config-subpanel" id="subpanel-forum">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="forum_api_key" placeholder="输入 Forum Host API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="forum_base_url" placeholder="https://api.siliconflow.cn/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="forum_model_name" placeholder="Qwen/Qwen3-235B-A22B-Instruct-2507">
+                                </div>
                             </div>
-                            <div class="config-field">
-                                <label for="dbPort">数据库端口</label>
-                                <input type="number" id="dbPort" value="3306" min="1" max="65535">
-                                <div class="config-info">MySQL 数据库端口，通常为 3306</div>
-                            </div>
-                            <div class="config-field">
-                                <label for="dbUser">数据库用户名</label>
-                                <input type="text" id="dbUser" placeholder="例如：weiyu_user">
-                            </div>
-                            <div class="config-field">
-                                <label for="dbPassword">数据库密码</label>
-                                <input type="password" id="dbPassword" placeholder="数据库密码">
-                            </div>
-                            <div class="config-field">
-                                <label for="dbName">数据库名称</label>
-                                <input type="text" id="dbName" placeholder="例如：weiyu_db">
-                                <div class="config-info">用于存储爬取数据和舆情分析结果的数据库</div>
-                            </div>
-                            <div class="config-field">
-                                <label for="dbCharset">字符集</label>
-                                <select id="dbCharset">
-                                    <option value="utf8mb4">utf8mb4（推荐）</option>
-                                    <option value="utf8">utf8</option>
-                                    <option value="latin1">latin1</option>
-                                </select>
-                                <div class="config-info">推荐使用 utf8mb4 以支持 Emoji 等特殊字符</div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用硅基流动平台，申请地址: <a href="https://cloud.siliconflow.cn/" target="_blank">https://cloud.siliconflow.cn/</a>
                             </div>
                         </div>
-                        <div class="config-info" style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 4px;">
-                            <strong>💡 提示：</strong>
-                            <ul style="margin: 5px 0 0 20px;">
-                                <li>数据库配置会保存在浏览器本地</li>
-                                <li>如果你没有 MySQL，可以安装 <a href="https://www.apachefriends.org/" target="_blank">XAMPP</a> 或 <a href="https://www.wampserver.com/" target="_blank">WAMP</a></li>
-                                <li>也可以使用云数据库服务（如阿里云RDS、腾讯云等）</li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <div class="config-section">
-                        <h3>WebDAV 备份配置 ☁️</h3>
-                        <p class="config-info">配置WebDAV服务器，可以将配置自动备份到云端（如：坚果云、Nextcloud等）。</p>
-                        <div class="config-group">
-                            <div class="config-field">
-                                <label for="webdavUrl">WebDAV 服务器地址</label>
-                                <input type="text" id="webdavUrl" placeholder="例如：https://dav.jianguoyun.com/dav/">
-                                <div class="config-info">WebDAV服务器的完整URL地址。</div>
+                        <!-- Keyword Optimizer -->
+                        <div class="config-subpanel" id="subpanel-keyword">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="keyword_api_key" placeholder="输入 Keyword Optimizer API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="keyword_base_url" placeholder="https://api.siliconflow.cn/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="keyword_model_name" placeholder="Qwen/Qwen3-30B-A3B-Instruct-2507">
+                                </div>
                             </div>
-                            <div class="config-field">
-                                <label for="webdavUsername">用户名</label>
-                                <input type="text" id="webdavUsername" placeholder="WebDAV用户名">
-                            </div>
-                            <div class="config-field">
-                                <label for="webdavPassword">密码/应用密码</label>
-                                <input type="password" id="webdavPassword" placeholder="WebDAV密码或应用专用密码">
-                                <div class="config-info">部分服务需要应用专用密码（如坚果云）。</div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用硅基流动平台，申请地址: <a href="https://cloud.siliconflow.cn/" target="_blank">https://cloud.siliconflow.cn/</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="config-modal-footer">
-                    <button type="button" class="config-button secondary" onclick="resetConfigToDefaults()">恢复推荐配置</button>
-                    <div style="display: flex; gap: 10px;">
-                        <button type="button" class="config-button secondary" onclick="exportConfigToLocal()">💾 导出到本地</button>
-                        <button type="button" class="config-button secondary" onclick="importConfigFromLocal()">📂 从本地导入</button>
-                        <input type="file" id="configFileInput" accept=".json" style="display: none;" onchange="handleConfigFileSelect(event)">
-                        <button type="button" class="config-button secondary" onclick="backupToWebDAV()">☁️ 备份到WebDAV</button>
-                        <button type="button" class="config-button secondary" onclick="restoreFromWebDAV()">☁️ 从WebDAV恢复</button>
-                        <button type="button" class="config-button secondary" onclick="closeConfigModal()">取消</button>
-                        <button type="submit" class="config-button">保存配置</button>
+                <!-- 检索与工具面板 -->
+                <div class="config-panel" id="panel-tools">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="tavily">Tavily Search</button>
+                        <button class="config-subtab" data-subpanel="bocha">Bocha Search</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- Tavily Search -->
+                        <div class="config-subpanel active" id="subpanel-tavily">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>Tavily API Key</label>
+                                    <input type="text" id="tavily_api_key" placeholder="输入 Tavily API Key">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                Tavily 提供新闻搜索功能，申请地址: <a href="https://www.tavily.com/" target="_blank">https://www.tavily.com/</a>
+                            </div>
+                        </div>
+
+                        <!-- Bocha Search -->
+                        <div class="config-subpanel" id="subpanel-bocha">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>Bocha API Key</label>
+                                    <input type="text" id="bocha_api_key" placeholder="输入 Bocha API Key">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                Bocha 提供多模态内容搜索，申请地址: <a href="https://open.bochaai.com/" target="_blank">https://open.bochaai.com/</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </form>
+
+                <!-- 爬虫面板 -->
+                <div class="config-panel" id="panel-crawler">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="database">数据库配置</button>
+                        <button class="config-subtab" data-subpanel="crawler-settings">爬虫设置</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- 数据库配置 -->
+                        <div class="config-subpanel active" id="subpanel-database">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>主机地址</label>
+                                    <input type="text" id="db_host" placeholder="localhost">
+                                </div>
+                                <div class="config-field">
+                                    <label>端口</label>
+                                    <input type="number" id="db_port" placeholder="3306">
+                                </div>
+                                <div class="config-field">
+                                    <label>用户名</label>
+                                    <input type="text" id="db_user" placeholder="root">
+                                </div>
+                                <div class="config-field">
+                                    <label>密码</label>
+                                    <input type="password" id="db_password" placeholder="数据库密码">
+                                </div>
+                                <div class="config-field">
+                                    <label>数据库名称</label>
+                                    <input type="text" id="db_name" placeholder="数据库名称">
+                                </div>
+                                <div class="config-field">
+                                    <label>字符集</label>
+                                    <input type="text" id="db_charset" placeholder="utf8mb4">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                配置 MySQL 数据库连接信息，用于存储爬取的社交媒体数据。<br>
+                                云数据库服务：可免费申请使用，联系邮箱 670939375@qq.com
+                            </div>
+                        </div>
+
+                        <!-- 爬虫设置 -->
+                        <div class="config-subpanel" id="subpanel-crawler-settings">
+                            <div class="config-placeholder">
+                                <strong>爬虫高级配置</strong><br>
+                                此部分功能正在开发中，敬请期待。<br>
+                                将支持自定义爬虫规则、频率控制、代理设置等功能。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高级配置面板 -->
+                <div class="config-panel" id="panel-advanced">
+                    <div class="config-placeholder">
+                        <strong>高级系统配置</strong><br>
+                        此部分功能正在开发中，敬请期待。<br>
+                        将支持日志级别、缓存设置、性能优化等高级参数配置。
+                    </div>
+                </div>
+
+                <!-- 情感分析面板 -->
+                <div class="config-panel" id="panel-sentiment">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="sentiment-models">模型配置</button>
+                        <button class="config-subtab" data-subpanel="sentiment-settings">分析设置</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- 模型配置 -->
+                        <div class="config-subpanel active" id="subpanel-sentiment-models">
+                            <div class="config-placeholder">
+                                <strong>情感分析模型配置</strong><br>
+                                此部分功能正在开发中，敬请期待。<br>
+                                将支持多种情感分析模型选择和配置。
+                            </div>
+                        </div>
+
+                        <!-- 分析设置 -->
+                        <div class="config-subpanel" id="subpanel-sentiment-settings">
+                            <div class="config-placeholder">
+                                <strong>情感分析设置</strong><br>
+                                此部分功能正在开发中，敬请期待。<br>
+                                将支持情感分析阈值、分类标签等参数调整。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="config-footer">
+            <div class="config-status" id="configStatus"></div>
+            <div class="config-actions">
+                <button class="config-secondary" id="configCancel">取消</button>
+                <button class="config-primary" id="configSave">保存配置</button>
+            </div>
         </div>
     </div>
 
@@ -1353,6 +1554,30 @@
                     switchToApp(app);
                 });
             });
+
+            // 配置按钮
+            document.getElementById('configButton').addEventListener('click', openConfig);
+            document.getElementById('configClose').addEventListener('click', closeConfig);
+            document.getElementById('configCancel').addEventListener('click', closeConfig);
+            document.getElementById('configSave').addEventListener('click', saveConfig);
+            document.getElementById('configBackdrop').addEventListener('click', closeConfig);
+
+            // 主标签页切换
+            document.querySelectorAll('.config-main-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const panel = this.dataset.panel;
+                    switchMainTab(panel);
+                });
+            });
+
+            // 所有config-subtab按钮
+            document.querySelectorAll('.config-subtab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const parentPanel = this.closest('.config-panel');
+                    const subpanel = this.dataset.subpanel;
+                    switchSubTab(parentPanel, subpanel);
+                });
+            });
         }
 
         // 执行搜索
@@ -1403,7 +1628,7 @@
                     totalRunning++;
                     
                     // 构建搜索URL
-                    const searchUrl = `http://localhost:${ports[app]}?query=${encodeURIComponent(query)}&auto_search=true`;
+                    const searchUrl = `http://${window.location.hostname}:${ports[app]}?query=${encodeURIComponent(query)}&auto_search=true`;
                     console.log(`向 ${app} 发送搜索请求: ${searchUrl}`);
                     
                     // 直接更新主iframe的src来传递搜索参数
@@ -1607,7 +1832,7 @@
             
             for (const [app, port] of Object.entries(ports)) {
                 const iframe = document.createElement('iframe');
-                iframe.src = `http://localhost:${port}`;
+                iframe.src = `http://${window.location.hostname}:${port}`;
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = 'none';
@@ -2739,655 +2964,196 @@
             }
         }
 
-        // ==================== 配置管理功能 ====================
-        
-        const CONFIG_STORAGE_KEY = 'weiyu_llm_config';
-        
-        // 引擎配置模板
-        const engineConfigs = {
-            insight: {
-                name: 'Insight Engine',
-                description: '私有数据库挖掘',
-                defaultConfig: {
-                    base_url: 'https://api.moonshot.cn/v1',
-                    model_name: 'kimi-k2-0711-preview',
-                    api_key: ''
-                }
-            },
-            media: {
-                name: 'Media Engine',
-                description: '多模态内容分析',
-                defaultConfig: {
-                    base_url: 'https://www.chataiapi.com/v1',
-                    model_name: 'gemini-2.5-pro',
-                    api_key: ''
-                }
-            },
-            query: {
-                name: 'Query Engine',
-                description: '精准信息搜索',
-                defaultConfig: {
-                    base_url: 'https://api.deepseek.com',
-                    model_name: 'deepseek-reasoner',
-                    api_key: ''
-                }
-            },
-            report: {
-                name: 'Report Engine',
-                description: '最终报告生成',
-                defaultConfig: {
-                    base_url: 'https://www.chataiapi.com/v1',
-                    model_name: 'gemini-2.5-pro',
-                    api_key: ''
-                }
-            },
-            forum: {
-                name: 'Forum Host',
-                description: '多智能体主持人',
-                defaultConfig: {
-                    base_url: 'https://api.siliconflow.cn/v1',
-                    model_name: 'Qwen/Qwen3-235B-A22B-Instruct-2507',
-                    api_key: ''
-                }
-            },
-            keyword_optimizer: {
-                name: 'Keyword Optimizer',
-                description: 'SQL 关键词优化',
-                defaultConfig: {
-                    base_url: 'https://api.siliconflow.cn/v1',
-                    model_name: 'Qwen/Qwen3-30B-A3B-Instruct-2507',
-                    api_key: ''
-                }
-            }
-        };
-        
-        // 从 localStorage 加载配置
-        function loadConfigFromStorage() {
-            try {
-                const storedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
-                if (storedConfig) {
-                    return JSON.parse(storedConfig);
-                }
-            } catch (error) {
-                console.error('加载配置失败:', error);
-            }
-            return null;
-        }
-        
-        // 保存配置到 localStorage
-        function saveConfigToStorage(config) {
-            try {
-                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
-                return true;
-            } catch (error) {
-                console.error('保存配置失败:', error);
-                return false;
-            }
-        }
-        
-        // 打开配置模态框
-        function openConfigModal() {
-            const modal = document.getElementById('configModal');
-            modal.classList.add('show');
-            
-            const statusDiv = document.getElementById('configStatus');
-            if (statusDiv) {
-                statusDiv.style.display = 'none';
-                statusDiv.textContent = '';
-                statusDiv.innerHTML = '';
-            }
-            
-            // 渲染引擎配置表单
-            renderEngineConfigForms();
-            
-            // 加载当前配置
-            loadCurrentConfig();
-        }
-        
-        // 关闭配置模态框
-        function closeConfigModal() {
-            const modal = document.getElementById('configModal');
-            modal.classList.remove('show');
-        }
-        
-        // 渲染引擎配置表单
-        function renderEngineConfigForms() {
-            const container = document.getElementById('engineConfigContainer');
-            container.innerHTML = '';
-            
-            for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'config-group';
-                groupDiv.innerHTML = `
-                    <h4>${engineInfo.name} - ${engineInfo.description}</h4>
-                    <div class="config-field">
-                        <label for="${engineKey}_base_url">Base URL</label>
-                        <input type="text" 
-                               id="${engineKey}_base_url" 
-                               name="${engineKey}_base_url" 
-                               placeholder="${engineInfo.defaultConfig.base_url}">
-                    </div>
-                    <div class="config-field">
-                        <label for="${engineKey}_model_name">Model Name</label>
-                        <input type="text" 
-                               id="${engineKey}_model_name" 
-                               name="${engineKey}_model_name" 
-                               placeholder="${engineInfo.defaultConfig.model_name}">
-                    </div>
-                    <div class="config-field">
-                        <label for="${engineKey}_api_key">API Key</label>
-                        <input type="password" 
-                               id="${engineKey}_api_key" 
-                               name="${engineKey}_api_key" 
-                               placeholder="输入 API Key">
-                        <div class="config-info">API Key 会安全保存在浏览器本地。</div>
-                    </div>
-                `;
-                container.appendChild(groupDiv);
-            }
-        }
-        
-        // 加载当前配置
-        function loadCurrentConfig() {
-            const storedConfig = loadConfigFromStorage();
-            
-            if (storedConfig) {
-                // 加载引擎配置
-                if (storedConfig.engines) {
-                    for (const [engineKey, engineConfig] of Object.entries(storedConfig.engines)) {
-                        const baseUrlInput = document.getElementById(`${engineKey}_base_url`);
-                        const modelNameInput = document.getElementById(`${engineKey}_model_name`);
-                        const apiKeyInput = document.getElementById(`${engineKey}_api_key`);
+        // ============ 配置管理功能 ============
 
-                        if (baseUrlInput) {
-                            baseUrlInput.value = engineConfig.base_url || engineConfigs[engineKey].defaultConfig.base_url;
-                        }
-                        if (modelNameInput) {
-                            modelNameInput.value = engineConfig.model_name || engineConfigs[engineKey].defaultConfig.model_name;
-                        }
-                        if (apiKeyInput && engineConfig.api_key) {
-                            apiKeyInput.value = engineConfig.api_key;
-                        }
+        let currentConfig = null;
+
+        function openConfig() {
+            document.getElementById('configBackdrop').classList.add('show');
+            document.getElementById('configModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadConfig();
+        }
+
+        function closeConfig() {
+            document.getElementById('configBackdrop').classList.remove('show');
+            document.getElementById('configModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function switchMainTab(panelId) {
+            document.querySelectorAll('.config-main-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.config-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            document.querySelector(`[data-panel="${panelId}"]`).classList.add('active');
+            document.getElementById(`panel-${panelId}`).classList.add('active');
+        }
+
+        function switchSubTab(parentPanel, subpanelId) {
+            parentPanel.querySelectorAll('.config-subtab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            parentPanel.querySelectorAll('.config-subpanel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            parentPanel.querySelector(`[data-subpanel="${subpanelId}"]`).classList.add('active');
+            parentPanel.querySelector(`#subpanel-${subpanelId}`).classList.add('active');
+        }
+
+        function loadConfig() {
+            const statusEl = document.getElementById('configStatus');
+            statusEl.textContent = '正在加载配置...';
+            statusEl.className = 'config-status';
+
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentConfig = data.config;
+                        populateConfigForm(data.config);
+                        statusEl.textContent = '配置加载成功';
+                        statusEl.className = 'config-status success';
+                        setTimeout(() => { statusEl.textContent = ''; }, 3000);
+                    } else {
+                        statusEl.textContent = '加载配置失败: ' + data.error;
+                        statusEl.className = 'config-status error';
                     }
-                }
-                
-                // 加载搜索工具配置
-                if (storedConfig.search_tools) {
-                    if (storedConfig.search_tools.tavily_api_key) {
-                        document.getElementById('tavilyApiKey').value = storedConfig.search_tools.tavily_api_key;
-                    }
-                    if (storedConfig.search_tools.bocha_api_key) {
-                        document.getElementById('bochaApiKey').value = storedConfig.search_tools.bocha_api_key;
-                    }
-                }
+                })
+                .catch(error => {
+                    console.error('加载配置失败:', error);
+                    statusEl.textContent = '加载配置失败: ' + error.message;
+                    statusEl.className = 'config-status error';
+                });
+        }
 
-                // 加载MindSpider配置
-                if (storedConfig.mindspider && storedConfig.mindspider.deepseek_api_key) {
-                    document.getElementById('mindspiderDeepseekApiKey').value = storedConfig.mindspider.deepseek_api_key;
-                }
+        function populateConfigForm(config) {
+            if (config.engines) {
+                document.getElementById('insight_api_key').value = config.engines.insight.api_key || '';
+                document.getElementById('insight_base_url').value = config.engines.insight.base_url || '';
+                document.getElementById('insight_model_name').value = config.engines.insight.model_name || '';
 
-                // 加载数据库配置
-                if (storedConfig.database) {
-                    if (storedConfig.database.host !== undefined) document.getElementById('dbHost').value = storedConfig.database.host;
-                    if (storedConfig.database.port !== undefined) document.getElementById('dbPort').value = storedConfig.database.port || '';
-                    if (storedConfig.database.user !== undefined) document.getElementById('dbUser').value = storedConfig.database.user;
-                    if (storedConfig.database.password !== undefined) document.getElementById('dbPassword').value = storedConfig.database.password;
-                    if (storedConfig.database.name !== undefined) document.getElementById('dbName').value = storedConfig.database.name;
-                    if (storedConfig.database.charset) document.getElementById('dbCharset').value = storedConfig.database.charset;
-                }
+                document.getElementById('media_api_key').value = config.engines.media.api_key || '';
+                document.getElementById('media_base_url').value = config.engines.media.base_url || '';
+                document.getElementById('media_model_name').value = config.engines.media.model_name || '';
 
-                // 加载高级配置
-                if (storedConfig.advanced) {
-                    if (storedConfig.advanced.query) {
-                        if (storedConfig.advanced.query.max_reflections) document.getElementById('queryMaxReflections').value = storedConfig.advanced.query.max_reflections;
-                        if (storedConfig.advanced.query.max_search_results) document.getElementById('queryMaxSearchResults').value = storedConfig.advanced.query.max_search_results;
-                        if (storedConfig.advanced.query.max_content_length) document.getElementById('queryMaxContentLength').value = storedConfig.advanced.query.max_content_length;
-                    }
-                    if (storedConfig.advanced.media) {
-                        if (storedConfig.advanced.media.max_reflections) document.getElementById('mediaMaxReflections').value = storedConfig.advanced.media.max_reflections;
-                        if (storedConfig.advanced.media.max_paragraphs) document.getElementById('mediaMaxParagraphs').value = storedConfig.advanced.media.max_paragraphs;
-                    }
-                    if (storedConfig.advanced.insight) {
-                        if (storedConfig.advanced.insight.max_reflections) document.getElementById('insightMaxReflections').value = storedConfig.advanced.insight.max_reflections;
-                        if (storedConfig.advanced.insight.search_hot_content_limit) document.getElementById('insightSearchHotContentLimit').value = storedConfig.advanced.insight.search_hot_content_limit;
-                        if (storedConfig.advanced.insight.get_comments_limit) document.getElementById('insightGetCommentsLimit').value = storedConfig.advanced.insight.get_comments_limit;
-                    }
-                }
+                document.getElementById('query_api_key').value = config.engines.query.api_key || '';
+                document.getElementById('query_base_url').value = config.engines.query.base_url || '';
+                document.getElementById('query_model_name').value = config.engines.query.model_name || '';
 
-                // 加载情感分析配置
-                if (storedConfig.sentiment) {
-                    if (storedConfig.sentiment.model_type) document.getElementById('sentimentModelType').value = storedConfig.sentiment.model_type;
-                    if (storedConfig.sentiment.confidence_threshold) document.getElementById('sentimentConfidenceThreshold').value = storedConfig.sentiment.confidence_threshold;
-                    if (storedConfig.sentiment.batch_size) document.getElementById('sentimentBatchSize').value = storedConfig.sentiment.batch_size;
-                    if (storedConfig.sentiment.max_sequence_length) document.getElementById('sentimentMaxSequenceLength').value = storedConfig.sentiment.max_sequence_length;
-                }
+                document.getElementById('report_api_key').value = config.engines.report.api_key || '';
+                document.getElementById('report_base_url').value = config.engines.report.base_url || '';
+                document.getElementById('report_model_name').value = config.engines.report.model_name || '';
 
-                // 加载WebDAV配置
-                if (storedConfig.webdav) {
-                    if (storedConfig.webdav.url) document.getElementById('webdavUrl').value = storedConfig.webdav.url;
-                    if (storedConfig.webdav.username) document.getElementById('webdavUsername').value = storedConfig.webdav.username;
-                    if (storedConfig.webdav.password) document.getElementById('webdavPassword').value = storedConfig.webdav.password;
-                }
-            } else {
-                // 没有存储配置时，填充默认推荐值
-                for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
-                    const baseUrlInput = document.getElementById(`${engineKey}_base_url`);
-                    const modelNameInput = document.getElementById(`${engineKey}_model_name`);
-                    if (baseUrlInput) baseUrlInput.value = engineInfo.defaultConfig.base_url;
-                    if (modelNameInput) modelNameInput.value = engineInfo.defaultConfig.model_name;
-                }
+                document.getElementById('forum_api_key').value = config.engines.forum_host.api_key || '';
+                document.getElementById('forum_base_url').value = config.engines.forum_host.base_url || '';
+                document.getElementById('forum_model_name').value = config.engines.forum_host.model_name || '';
 
-                // MindSpider 默认不填写（将自动继承 Query Engine 配置）
-                const mindspiderInput = document.getElementById('mindspiderDeepseekApiKey');
-                if (mindspiderInput) {
-                    mindspiderInput.value = '';
-                }
+                document.getElementById('keyword_api_key').value = config.engines.keyword_optimizer.api_key || '';
+                document.getElementById('keyword_base_url').value = config.engines.keyword_optimizer.base_url || '';
+                document.getElementById('keyword_model_name').value = config.engines.keyword_optimizer.model_name || '';
+            }
 
-                // 数据库默认推荐值
-                document.getElementById('dbHost').value = 'localhost';
-                document.getElementById('dbPort').value = '3306';
-                document.getElementById('dbUser').value = '';
-                document.getElementById('dbPassword').value = '';
-                document.getElementById('dbName').value = '';
-                document.getElementById('dbCharset').value = 'utf8mb4';
+            if (config.tools) {
+                document.getElementById('tavily_api_key').value = config.tools.tavily_api_key || '';
+                document.getElementById('bocha_api_key').value = config.tools.bocha_api_key || '';
+            }
+
+            if (config.database) {
+                document.getElementById('db_host').value = config.database.host || '';
+                document.getElementById('db_port').value = config.database.port || 3306;
+                document.getElementById('db_user').value = config.database.user || '';
+                document.getElementById('db_password').value = config.database.password || '';
+                document.getElementById('db_name').value = config.database.name || '';
+                document.getElementById('db_charset').value = config.database.charset || 'utf8mb4';
             }
         }
-        
-        // 恢复推荐配置
-        function resetConfigToDefaults() {
-            if (confirm('确定要恢复推荐的默认配置吗？这不会清除已输入的 API Key。')) {
-                for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
-                    const baseUrlInput = document.getElementById(`${engineKey}_base_url`);
-                    const modelNameInput = document.getElementById(`${engineKey}_model_name`);
-                    if (baseUrlInput) baseUrlInput.value = engineInfo.defaultConfig.base_url;
-                    if (modelNameInput) modelNameInput.value = engineInfo.defaultConfig.model_name;
-                }
-                const mindspiderInput = document.getElementById('mindspiderDeepseekApiKey');
-                if (mindspiderInput) {
-                    mindspiderInput.value = '';
-                }
 
-                // 恢复数据库默认值
-                document.getElementById('dbHost').value = 'localhost';
-                document.getElementById('dbPort').value = '3306';
-                document.getElementById('dbUser').value = '';
-                document.getElementById('dbPassword').value = '';
-                document.getElementById('dbName').value = '';
-                document.getElementById('dbCharset').value = 'utf8mb4';
+        function saveConfig() {
+            const statusEl = document.getElementById('configStatus');
+            statusEl.textContent = '正在保存配置...';
+            statusEl.className = 'config-status';
 
-                // 恢复高级配置默认值
-                document.getElementById('queryMaxReflections').value = 2;
-                document.getElementById('queryMaxSearchResults').value = 20;
-                document.getElementById('queryMaxContentLength').value = 20000;
-
-                document.getElementById('mediaMaxReflections').value = 2;
-                document.getElementById('mediaMaxParagraphs').value = 5;
-
-                document.getElementById('insightMaxReflections').value = 3;
-                document.getElementById('insightSearchHotContentLimit').value = 100;
-                document.getElementById('insightGetCommentsLimit').value = 500;
-
-                document.getElementById('sentimentModelType').value = 'multilingual';
-                document.getElementById('sentimentConfidenceThreshold').value = 0.8;
-                document.getElementById('sentimentBatchSize').value = 32;
-                document.getElementById('sentimentMaxSequenceLength').value = 512;
-
-                document.getElementById('webdavUrl').value = '';
-                document.getElementById('webdavUsername').value = '';
-                document.getElementById('webdavPassword').value = '';
-
-                showMessage('已恢复推荐配置', 'success');
-            }
-        }
-        
-        // 处理配置表单提交
-        document.getElementById('configForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const statusDiv = document.getElementById('configStatus');
-            statusDiv.style.display = 'none';
-            
-            // 收集配置数据
             const configData = {
-                engines: {},
-                search_tools: {},
-                mindspider: {},
-                database: {},
-                advanced: {
-                    query: {},
-                    media: {},
-                    insight: {}
+                engines: {
+                    insight: {
+                        api_key: document.getElementById('insight_api_key').value,
+                        base_url: document.getElementById('insight_base_url').value,
+                        model_name: document.getElementById('insight_model_name').value
+                    },
+                    media: {
+                        api_key: document.getElementById('media_api_key').value,
+                        base_url: document.getElementById('media_base_url').value,
+                        model_name: document.getElementById('media_model_name').value
+                    },
+                    query: {
+                        api_key: document.getElementById('query_api_key').value,
+                        base_url: document.getElementById('query_base_url').value,
+                        model_name: document.getElementById('query_model_name').value
+                    },
+                    report: {
+                        api_key: document.getElementById('report_api_key').value,
+                        base_url: document.getElementById('report_base_url').value,
+                        model_name: document.getElementById('report_model_name').value
+                    },
+                    forum_host: {
+                        api_key: document.getElementById('forum_api_key').value,
+                        base_url: document.getElementById('forum_base_url').value,
+                        model_name: document.getElementById('forum_model_name').value
+                    },
+                    keyword_optimizer: {
+                        api_key: document.getElementById('keyword_api_key').value,
+                        base_url: document.getElementById('keyword_base_url').value,
+                        model_name: document.getElementById('keyword_model_name').value
+                    }
                 },
-                sentiment: {},
-                webdav: {}
-            };
-            
-            // 收集引擎配置
-            for (const engineKey of Object.keys(engineConfigs)) {
-                const baseUrl = document.getElementById(`${engineKey}_base_url`).value.trim();
-                const modelName = document.getElementById(`${engineKey}_model_name`).value.trim();
-                const apiKey = document.getElementById(`${engineKey}_api_key`).value.trim();
-                
-                configData.engines[engineKey] = {
-                    base_url: baseUrl || engineConfigs[engineKey].defaultConfig.base_url,
-                    model_name: modelName || engineConfigs[engineKey].defaultConfig.model_name,
-                    api_key: apiKey
-                };
-            }
-            
-            // 收集搜索工具配置
-            configData.search_tools.tavily_api_key = document.getElementById('tavilyApiKey').value.trim();
-            configData.search_tools.bocha_api_key = document.getElementById('bochaApiKey').value.trim();
-
-            // 收集MindSpider配置
-            configData.mindspider.deepseek_api_key = document.getElementById('mindspiderDeepseekApiKey').value.trim();
-
-            // 收集数据库配置
-            configData.database.host = document.getElementById('dbHost').value.trim();
-            configData.database.port = document.getElementById('dbPort').value.trim();
-            configData.database.user = document.getElementById('dbUser').value.trim();
-            configData.database.password = document.getElementById('dbPassword').value;
-            configData.database.name = document.getElementById('dbName').value.trim();
-            configData.database.charset = document.getElementById('dbCharset').value;
-
-            // 收集高级配置
-            configData.advanced.query.max_reflections = parseInt(document.getElementById('queryMaxReflections').value) || 2;
-            configData.advanced.query.max_search_results = parseInt(document.getElementById('queryMaxSearchResults').value) || 20;
-            configData.advanced.query.max_content_length = parseInt(document.getElementById('queryMaxContentLength').value) || 20000;
-
-            configData.advanced.media.max_reflections = parseInt(document.getElementById('mediaMaxReflections').value) || 2;
-            configData.advanced.media.max_paragraphs = parseInt(document.getElementById('mediaMaxParagraphs').value) || 5;
-
-            configData.advanced.insight.max_reflections = parseInt(document.getElementById('insightMaxReflections').value) || 3;
-            configData.advanced.insight.search_hot_content_limit = parseInt(document.getElementById('insightSearchHotContentLimit').value) || 100;
-            configData.advanced.insight.get_comments_limit = parseInt(document.getElementById('insightGetCommentsLimit').value) || 500;
-
-            // 收集情感分析配置
-            configData.sentiment.model_type = document.getElementById('sentimentModelType').value;
-            configData.sentiment.confidence_threshold = parseFloat(document.getElementById('sentimentConfidenceThreshold').value) || 0.8;
-            configData.sentiment.batch_size = parseInt(document.getElementById('sentimentBatchSize').value) || 32;
-            configData.sentiment.max_sequence_length = parseInt(document.getElementById('sentimentMaxSequenceLength').value) || 512;
-
-            // 收集WebDAV配置
-            configData.webdav.url = document.getElementById('webdavUrl').value.trim();
-            configData.webdav.username = document.getElementById('webdavUsername').value.trim();
-            configData.webdav.password = document.getElementById('webdavPassword').value.trim();
-            
-            // 保存到 localStorage
-            if (saveConfigToStorage(configData)) {
-                // 发送到后端
-                try {
-                    const response = await fetch('/api/config', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(configData)
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        statusDiv.className = 'config-status success';
-                        const updates = Array.isArray(result.updates) ? result.updates.filter(Boolean) : [];
-                        if (updates.length > 0) {
-                            statusDiv.innerHTML = '✓ 配置保存成功！<br>' + updates.map(update => `• ${update}`).join('<br>');
-                        } else {
-                            statusDiv.textContent = '✓ 配置保存成功！配置已生效。';
-                        }
-                        statusDiv.style.display = 'block';
-                        showMessage('配置保存成功', 'success');
-                        
-                        // 2秒后关闭模态框
-                        setTimeout(() => {
-                            closeConfigModal();
-                        }, 2000);
-                    } else {
-                        throw new Error(result.error || '保存失败');
-                    }
-                } catch (error) {
-                    statusDiv.className = 'config-status error';
-                    statusDiv.textContent = '✗ 保存失败: ' + error.message;
-                    statusDiv.style.display = 'block';
-                    showMessage('配置保存失败: ' + error.message, 'error');
-                }
-            } else {
-                statusDiv.className = 'config-status error';
-                statusDiv.textContent = '✗ 无法保存到浏览器存储，请检查浏览器设置。';
-                statusDiv.style.display = 'block';
-            }
-        });
-        
-        // 在页面加载时自动应用存储的配置
-        (function initializeConfig() {
-            const storedConfig = loadConfigFromStorage();
-            if (storedConfig) {
-                fetch('/api/config', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(storedConfig)
-                }).then(response => response.json())
-                  .then(result => {
-                      if (result.success) {
-                          console.log('已从浏览器存储加载配置');
-                      }
-                  })
-                  .catch(error => {
-                      console.error('自动加载配置失败:', error);
-                  });
-            }
-        })();
-        
-        // 导出配置到本地文件
-        function exportConfigToLocal() {
-            const config = loadConfigFromStorage();
-            if (!config) {
-                showMessage('没有找到配置', 'error');
-                return;
-            }
-
-            const backup = {
-                version: '1.0',
-                backup_time: new Date().toISOString(),
-                config: config
-            };
-
-            const jsonStr = JSON.stringify(backup, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
-            a.download = `weiyu_config_${timestamp}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            showMessage('配置已导出', 'success');
-        }
-
-        // 从本地文件导入配置
-        function importConfigFromLocal() {
-            document.getElementById('configFileInput').click();
-        }
-
-        // 处理文件选择
-        function handleConfigFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const backup = JSON.parse(e.target.result);
-                    if (!backup.config) {
-                        throw new Error('无效的备份文件格式');
-                    }
-
-                    // 保存配置
-                    if (saveConfigToStorage(backup.config)) {
-                        showMessage('配置导入成功！页面将刷新以应用新配置...', 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        throw new Error('保存配置失败');
-                    }
-                } catch (error) {
-                    showMessage('导入失败: ' + error.message, 'error');
+                tools: {
+                    tavily_api_key: document.getElementById('tavily_api_key').value,
+                    bocha_api_key: document.getElementById('bocha_api_key').value
+                },
+                database: {
+                    host: document.getElementById('db_host').value,
+                    port: parseInt(document.getElementById('db_port').value) || 3306,
+                    user: document.getElementById('db_user').value,
+                    password: document.getElementById('db_password').value,
+                    name: document.getElementById('db_name').value,
+                    charset: document.getElementById('db_charset').value
                 }
             };
-            reader.readAsText(file);
 
-            // 清除文件输入，允许重复选择相同文件
-            event.target.value = '';
-        }
-
-        // 备份到WebDAV
-        async function backupToWebDAV() {
-            const config = loadConfigFromStorage();
-            if (!config) {
-                showMessage('没有找到配置', 'error');
-                return;
-            }
-
-            const webdavUrl = document.getElementById('webdavUrl').value.trim();
-            const webdavUsername = document.getElementById('webdavUsername').value.trim();
-            const webdavPassword = document.getElementById('webdavPassword').value.trim();
-
-            if (!webdavUrl || !webdavUsername || !webdavPassword) {
-                showMessage('请先填写完整的WebDAV配置信息', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/config/backup/webdav', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        config: config,
-                        webdav: {
-                            url: webdavUrl,
-                            username: webdavUsername,
-                            password: webdavPassword
-                        }
-                    })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    showMessage('配置已备份到WebDAV', 'success');
+            fetch('/api/config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(configData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    statusEl.textContent = '配置保存成功！需要重启应用生效';
+                    statusEl.className = 'config-status success';
+                    showMessage('配置已保存', 'success');
+                    setTimeout(() => {
+                        closeConfig();
+                    }, 2000);
                 } else {
-                    throw new Error(result.error || '备份失败');
+                    statusEl.textContent = '保存失败: ' + data.error;
+                    statusEl.className = 'config-status error';
+                    showMessage('保存配置失败: ' + data.error, 'error');
                 }
-            } catch (error) {
-                showMessage('WebDAV备份失败: ' + error.message, 'error');
-            }
+            })
+            .catch(error => {
+                console.error('保存配置失败:', error);
+                statusEl.textContent = '保存失败: ' + error.message;
+                statusEl.className = 'config-status error';
+                showMessage('保存配置失败: ' + error.message, 'error');
+            });
         }
-
-        // 从WebDAV恢复配置
-        async function restoreFromWebDAV() {
-            const webdavUrl = document.getElementById('webdavUrl').value.trim();
-            const webdavUsername = document.getElementById('webdavUsername').value.trim();
-            const webdavPassword = document.getElementById('webdavPassword').value.trim();
-
-            if (!webdavUrl || !webdavUsername || !webdavPassword) {
-                showMessage('请先填写完整的WebDAV配置信息', 'error');
-                return;
-            }
-
-            try {
-                // 首先列出备份文件
-                const listResponse = await fetch('/api/config/list/webdav', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        webdav: {
-                            url: webdavUrl,
-                            username: webdavUsername,
-                            password: webdavPassword
-                        }
-                    })
-                });
-
-                const listResult = await listResponse.json();
-                if (!listResult.success) {
-                    throw new Error(listResult.error || '无法列出备份文件');
-                }
-
-                const files = listResult.files;
-                if (files.length === 0) {
-                    showMessage('WebDAV上没有找到备份文件', 'info');
-                    return;
-                }
-
-                // 使用最新的备份文件
-                const latestFile = files[0];
-                const filename = latestFile.filename;
-
-                if (!confirm(`确定要恢复备份：${filename}？当前配置将被覆盖。`)) {
-                    return;
-                }
-
-                // 恢复配置
-                const restoreResponse = await fetch('/api/config/restore/webdav', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        filename: filename,
-                        webdav: {
-                            url: webdavUrl,
-                            username: webdavUsername,
-                            password: webdavPassword
-                        }
-                    })
-                });
-
-                const restoreResult = await restoreResponse.json();
-                if (restoreResult.success) {
-                    // 保存恢复的配置
-                    if (saveConfigToStorage(restoreResult.config)) {
-                        showMessage('配置从WebDAV恢复成功！页面将刷新以应用新配置...', 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        throw new Error('保存配置失败');
-                    }
-                } else {
-                    throw new Error(restoreResult.error || '恢复失败');
-                }
-            } catch (error) {
-                showMessage('WebDAV恢复失败: ' + error.message, 'error');
-            }
-        }
-        
-        // 点击模态框外部关闭
-        document.getElementById('configModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeConfigModal();
-            }
-        });
-        
-        // ESC键关闭模态框
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                const modal = document.getElementById('configModal');
-                if (modal.classList.contains('show')) {
-                    closeConfigModal();
-                }
-            }
-        });
     </script>
 </body>
 </html>

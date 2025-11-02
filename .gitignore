@@ -273,9 +273,9 @@ docs/.vitepress/cache
 
 # ==== 日志和临时文件 ====
 # 日志文件
-app.log
-*.log
-logs/
+# *.log
+# logs/
+# */logs/
 
 # 临时文件
 temp/

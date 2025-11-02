@@ -141,10 +141,7 @@ class ReportAgent:
         os.makedirs(self.config.output_dir, exist_ok=True)
         
         self.logger.info("Report Agent已初始化")
-        if self.llm_client and self.config.llm_api_key:
-            self.logger.info(f"使用LLM: {self.llm_client.get_model_info()}")
-        else:
-            self.logger.warning("LLM未配置，请在网页配置界面配置后使用")
+        self.logger.info(f"使用LLM: {self.llm_client.get_model_info()}")
         
     def _setup_logging(self):
         """设置日志"""

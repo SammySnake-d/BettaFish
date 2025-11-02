@@ -1,3 +1,10 @@
+> [!warning]
+> 好像最近项目中用来请求每日热点新闻的api接口被ban了，可以自己部署一下[newsnow](https://github.com/ourongxing/newsnow)，很快的可以一键部署，然后替换掉这个URL即可，最近一个月我也会commit一版更通用的解决方案。
+> ```python
+> #新闻API基础URL
+> BASE URL = "https://newsnow.busiyi.world"
+> ```
+
 # MindSpider - 专为舆情分析设计的AI爬虫
 
 > 免责声明：
@@ -13,6 +20,12 @@ MindSpider是一个基于Agent技术的智能舆情爬虫系统，通过AI自动
 
 - 模块一：Search Agent从包括微博、知乎、github、酷安等 **13个** 社媒平台、技术论坛识别热点新闻，并维护一个每日话题分析表。
 - 模块二：全平台爬虫深度爬取每个话题的细粒度舆情反馈。
+
+<div align="center">
+<img src="img\example.png" alt="banner" width="700">
+
+MindSpider 运行示例
+</div>
 
 ### 技术架构
 

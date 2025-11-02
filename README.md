@@ -2,7 +2,7 @@
 
 <img src="static/image/logo_compressed.png" alt="Weibo Public Opinion Analysis System Logo" width="100%">
 
-<a href="https://trendshift.io/repositories/12461" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12461" alt="666ghj%2FWeibo_PublicOpinion_AnalysisSystem | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/15286" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15286" alt="666ghj%2FBettaFish | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
 <a href="https://leaflow.net/" target="_blank"><img src="static/image/Leaflow_logo.png" alt="666ghj%2FWeibo_PublicOpinion_AnalysisSystem | Leaflow" style="width: 150px;" width="150"/></a>
 
@@ -20,6 +20,9 @@
 [English](./README-EN.md) | [中文文档](./README.md)
 
 </div>
+
+> [!IMPORTANT]
+> 周一（11.3）会上**在线一键部署体验**，欢迎持续关注！
 
 ## ⚡ 项目概述
 
@@ -206,17 +209,7 @@ conda activate your_conda_name
 ```bash
 # 基础依赖安装
 pip install -r requirements.txt
-
-#========下面是可选项========
-# 如果需要本地情感分析功能，安装PyTorch
-# CPU版本
-pip install torch torchvision torchaudio
-
-# CUDA 11.8版本（如有GPU）
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-# 安装transformers等AI相关依赖
-pip install transformers scikit-learn xgboost
+# 如果不想使用本地情感分析模型（算力需求很小，默认安装cpu版本），可以将该文件中的“机器学习”部分注释掉再执行指令
 ```
 
 ### 3. 安装Playwright浏览器驱动
@@ -293,6 +286,8 @@ python app.py
 
 > 注2：数据爬取需要单独操作，见5.3指引
 
+> 注3：如果服务器远程部署出现页面显示问题，见[PR#45](https://github.com/666ghj/BettaFish/pull/45)
+
 访问 http://localhost:5000 即可使用完整系统
 
 #### 5.2 单独启动某个Agent
@@ -311,6 +306,12 @@ streamlit run SingleEngineApp/insight_engine_streamlit_app.py --server.port 8501
 #### 5.3 爬虫系统单独使用
 
 这部分有详细的配置文档：[MindeSpider使用说明](./MindSpider/README.md)
+
+<div align="center">
+<img src="MindSpider\img\example.png" alt="banner" width="600">
+
+MindSpider 运行示例
+</div>
 
 ```bash
 # 进入爬虫目录
@@ -586,3 +587,15 @@ class DeepSearchAgent:
 感谢以下优秀的贡献者们：
 
 [![Contributors](https://contrib.rocks/image?repo=666ghj/Weibo_PublicOpinion_AnalysisSystem)](https://github.com/666ghj/Weibo_PublicOpinion_AnalysisSystem/graphs/contributors)
+
+## 📈 项目统计
+
+<a href="https://www.star-history.com/#666ghj/BettaFish&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=666ghj/BettaFish&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=666ghj/BettaFish&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=666ghj/BettaFish&type=date&legend=top-left" />
+ </picture>
+</a>
+
+![Alt](https://repobeats.axiom.co/api/embed/e04e3eea4674edc39c148a7845c8d09c1b7b1922.svg "Repobeats analytics image")
