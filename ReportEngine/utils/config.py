@@ -51,14 +51,32 @@ class Config:
         if not self.llm_provider and self.llm_model_name:
             self.llm_provider = self.llm_model_name
 
-    def validate(self) -> bool:
-        if not self.llm_api_key:
-            print("错误: Report Engine LLM API Key 未设置 (REPORT_ENGINE_API_KEY)。")
-            return False
-        if not self.llm_model_name:
-            print("错误: Report Engine 模型名称未设置 (REPORT_ENGINE_MODEL_NAME)。")
-            return False
-        return True
+    def validate(self, strict: bool = False) -> bool:
+        """
+        验证配置
+        
+        Args:
+            strict: 是否严格验证。如果为False，即使缺少API Key也不会报错
+        
+        Returns:
+            是否验证通过
+        """
+        if not strict:
+            # 宽松模式：允许没有API Key启动，使用时再提示
+            if not self.llm_api_key:
+                print("⚠️  警告: Report Engine LLM API Key 未设置，请在网页配置界面配置后使用。")
+            if not self.llm_model_name:
+                print("⚠️  警告: Report Engine 模型名称未设置，请在网页配置界面配置后使用。")
+            return True
+        else:
+            # 严格模式：必须有API Key
+            if not self.llm_api_key:
+                print("错误: Report Engine LLM API Key 未设置 (REPORT_ENGINE_API_KEY)。")
+                return False
+            if not self.llm_model_name:
+                print("错误: Report Engine 模型名称未设置 (REPORT_ENGINE_MODEL_NAME)。")
+                return False
+            return True
 
     @classmethod
     def from_file(cls, config_file: str) -> "Config":
@@ -130,8 +148,8 @@ def load_config(config_file: Optional[str] = None) -> Config:
             raise FileNotFoundError("未找到配置文件，请创建 config.py。")
 
     config = Config.from_file(file_to_load)
-    if not config.validate():
-        raise ValueError("Report Engine 配置校验失败，请检查 config.py 中的相关配置。")
+    # 在启动时允许缺少API Key，故使用宽松模式
+    config.validate(strict=False)
     return config
 
 

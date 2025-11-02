@@ -29,11 +29,19 @@ def initialize_report_engine():
     global report_agent
     try:
         config = load_config()
+
+        # 如果缺少必要配置，则跳过初始化
+        if not config.llm_api_key or not config.llm_model_name:
+            print("Report Engine: 检测到缺少 LLM 配置，暂时跳过初始化。请在网页配置界面配置后再使用。")
+            report_agent = None
+            return False
+
         report_agent = create_agent()
         print("Report Engine初始化成功")
         return True
     except Exception as e:
         print(f"Report Engine初始化失败: {str(e)}")
+        report_agent = None
         return False
 
 

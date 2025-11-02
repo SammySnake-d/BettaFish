@@ -1056,18 +1056,28 @@ if __name__ == '__main__':
     
     # 初始化ReportEngine
     if REPORT_ENGINE_AVAILABLE:
-        print("初始化ReportEngine...")
-        if initialize_report_engine():
-            print("ReportEngine初始化成功")
-            print("ReportEngine文件基准已建立，开始监控文件变化")
+        report_api_key = os.getenv('REPORT_ENGINE_API_KEY')
+        report_model = os.getenv('REPORT_ENGINE_MODEL_NAME')
+        if report_api_key and report_model:
+            print("初始化ReportEngine...")
+            if initialize_report_engine():
+                print("ReportEngine初始化成功")
+                print("ReportEngine文件基准已建立，开始监控文件变化")
+            else:
+                print("ReportEngine初始化失败，将在配置完整后再次尝试。")
         else:
-            print("ReportEngine初始化失败")
+            print("ReportEngine: 未检测到 LLM 配置信息，已跳过初始化。配置完成后会自动启用。")
     
     print("启动Flask服务器...")
     
+    # 设置环境变量以抑制Werkzeug生产环境警告
+    os.environ['WERKZEUG_RUN_MAIN'] = 'true'
+    
     try:
         # 启动Flask应用
-        socketio.run(app, host='0.0.0.0', port=5000, debug=False)
+        # 注意：对于生产环境，建议使用 gunicorn 或其他 WSGI 服务器
+        # 例如：gunicorn -k eventlet -w 1 --bind 0.0.0.0:5000 app:app
+        socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
     except KeyboardInterrupt:
         print("\n正在关闭应用...")
         cleanup_processes()
