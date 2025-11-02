@@ -863,6 +863,19 @@
             report: 'Report Agent - 最终报告生成'
         };
 
+        const agentProtocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+        const agentHostname = window.location.hostname || '127.0.0.1';
+
+        function buildAgentUrl(port, queryParams = {}) {
+            const url = new URL(`${agentProtocol}//${agentHostname}:${port}`);
+            Object.entries(queryParams).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    url.searchParams.set(key, value);
+                }
+            });
+            return url.toString();
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             initializeSocket();
@@ -897,10 +910,18 @@
 
         // Socket.IO连接
         function initializeSocket() {
-            socket = io();
+            // 动态构建Socket.IO连接URL，支持本地和远程部署
+            const socketUrl = `${window.location.protocol}//${window.location.hostname}:${window.location.port || (window.location.protocol === 'https:' ? 443 : 80)}`;
+            socket = io(socketUrl, {
+                transports: ['websocket', 'polling'],  // 支持多种传输方式
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionAttempts: 5
+            });
 
             socket.on('connect', function() {
                 updateConnectionStatus('已连接');
+                console.log('Socket.IO已连接到:', socketUrl);
                 socket.emit('request_status');
             });
 
@@ -1001,8 +1022,8 @@
                 if (appStatus[app] === 'running' && preloadedIframes[app]) {
                     totalRunning++;
                     
-                    // 构建搜索URL
-                    const searchUrl = `http://${window.location.hostname}:${ports[app]}?query=${encodeURIComponent(query)}&auto_search=true`;
+                    // 构建搜索URL（使用新的通用函数）
+                    const searchUrl = buildAgentUrl(ports[app], { query, auto_search: 'true' });
                     console.log(`向 ${app} 发送搜索请求: ${searchUrl}`);
                     
                     // 直接更新主iframe的src来传递搜索参数
@@ -1206,7 +1227,7 @@
             
             for (const [app, port] of Object.entries(ports)) {
                 const iframe = document.createElement('iframe');
-                iframe.src = `http://${window.location.hostname}:${port}`;
+                iframe.src = buildAgentUrl(port);
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = 'none';

@@ -221,6 +221,16 @@ playwright install chromium
 
 ### 4. 配置系统
 
+#### 4.0 一键清理运行中的 Agent
+
+在更新代码或重新部署之前，可以使用仓库根目录下提供的脚本快速清理所有运行中的 Agent 进程，避免端口占用：
+
+- `kill_all_agents.sh`：适用于 Linux / macOS
+- `kill_all_agents.bat`：适用于 Windows
+- `kill_all_agents.py`：跨平台版本（需要安装 `psutil`，已在 `requirements.txt` 中声明）
+
+详细使用说明见 [`KILL_AGENTS_README.md`](./KILL_AGENTS_README.md)。
+
 #### 4.1 配置API密钥
 
 编辑 `config.py` 文件，填入您的API密钥（您也可以选择自己的模型、搜索代理，详情见config文件内）：
