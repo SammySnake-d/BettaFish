@@ -109,6 +109,304 @@
             cursor: pointer;
         }
 
+        /* 配置中心样式 */
+        .config-backdrop {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease;
+            z-index: 900;
+        }
+
+        .config-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .config-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 82vw;
+            max-width: 1100px;
+            max-height: 86vh;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 950;
+        }
+
+        .config-modal.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .config-header {
+            padding: 20px 28px;
+            border-bottom: 2px solid #000000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .config-title {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .config-subtitle {
+            font-size: 13px;
+            color: #555555;
+            margin-top: 6px;
+        }
+
+        .config-close {
+            border: none;
+            background: #000000;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        .config-close:hover {
+            background-color: #333333;
+        }
+
+        .config-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            padding: 0 28px 28px 28px;
+        }
+
+        .config-main-tabs {
+            display: flex;
+            border-bottom: 2px solid #000000;
+            margin-bottom: 18px;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .config-main-tab {
+            padding: 10px 18px;
+            border: none;
+            background-color: #f4f4f4;
+            color: #000000;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #000000;
+            border-bottom: none;
+            transition: all 0.2s ease;
+        }
+
+        .config-main-tab.active {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .config-main-tab:not(.active):hover {
+            background-color: #e2e2e2;
+        }
+
+        .config-panels {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .config-panel {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .config-panel.active {
+            display: flex;
+        }
+
+        .config-subtabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .config-subtab {
+            padding: 8px 16px;
+            border: 2px solid #000000;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .config-subtab.active {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .config-subtab:not(.active):hover {
+            background-color: #f2f2f2;
+        }
+
+        .config-subpanels {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .config-subpanel {
+            display: none;
+        }
+
+        .config-subpanel.active {
+            display: block;
+        }
+
+        .config-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .config-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid #d8d8d8;
+            padding: 12px;
+            background-color: #fefefe;
+        }
+
+        .config-field label {
+            font-weight: bold;
+            font-size: 13px;
+            color: #333333;
+        }
+
+        .config-field input {
+            padding: 10px 12px;
+            border: 2px solid #cccccc;
+            font-size: 13px;
+            transition: border-color 0.2s ease;
+        }
+
+        .config-field input:focus {
+            outline: none;
+            border-color: #000000;
+        }
+
+        .config-note {
+            font-size: 12px;
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        .config-placeholder {
+            padding: 40px 20px;
+            border: 2px dashed #b5b5b5;
+            background-color: #fdfdfd;
+            text-align: center;
+            color: #666666;
+            line-height: 1.8;
+        }
+
+        .config-footer {
+            padding: 18px 28px;
+            border-top: 2px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .config-primary,
+        .config-secondary {
+            padding: 10px 24px;
+            border: 2px solid #000000;
+            background-color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .config-primary {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .config-primary:hover {
+            background-color: #333333;
+        }
+
+        .config-secondary:hover {
+            background-color: #f2f2f2;
+        }
+
+        .config-status {
+            font-size: 12px;
+            color: #666666;
+            min-height: 16px;
+        }
+
+        .config-status.success {
+            color: #2e7d32;
+        }
+
+        .config-status.error {
+            color: #c62828;
+        }
+
+        @media (max-width: 1024px) {
+            .config-modal {
+                width: 92vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .config-modal {
+                width: 96vw;
+                max-height: 90vh;
+            }
+
+            .config-header,
+            .config-body,
+            .config-footer {
+                padding: 16px;
+            }
+
+            .config-main-tabs {
+                gap: 6px;
+            }
+
+            .config-field {
+                padding: 10px;
+            }
+        }
+
         .upload-status {
             font-size: 12px;
             margin-top: 10px;
@@ -759,6 +1057,9 @@
                     上传模板
                     <input type="file" id="templateFileInput" accept=".md,.txt" title="上传自定义报告模板(支持 .md 和 .txt 文件)">
                 </button>
+                <button class="upload-button" id="configButton" style="border-left: 2px solid #000000;">
+                    ⚙️ 配置
+                </button>
             </div>
             <div class="upload-status" id="uploadStatus"></div>
         </div>
@@ -831,6 +1132,368 @@
 
     <!-- 消息提示 -->
     <div class="message" id="message"></div>
+
+        <!-- 配置模态框背景 -->
+    <div class="config-backdrop" id="configBackdrop"></div>
+
+    <!-- 配置模态框 -->
+    <div class="config-modal" id="configModal">
+        <div class="config-header">
+            <div>
+                <div class="config-title">系统配置</div>
+                <div class="config-subtitle">配置 LLM、数据库、检索工具等参数</div>
+            </div>
+            <button class="config-close" id="configClose">✕</button>
+        </div>
+
+        <div class="config-body">
+            <div class="config-main-tabs">
+                <button class="config-main-tab active" data-panel="engines">引擎 LLM 配置</button>
+                <button class="config-main-tab" data-panel="tools">检索与工具</button>
+                <button class="config-main-tab" data-panel="crawler">爬虫</button>
+                <button class="config-main-tab" data-panel="advanced">高级配置</button>
+                <button class="config-main-tab" data-panel="sentiment">情感分析</button>
+            </div>
+
+            <div class="config-panels">
+                <!-- 引擎 LLM 配置面板 -->
+                <div class="config-panel active" id="panel-engines">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="insight">Insight Engine</button>
+                        <button class="config-subtab" data-subpanel="media">Media Engine</button>
+                        <button class="config-subtab" data-subpanel="query">Query Engine</button>
+                        <button class="config-subtab" data-subpanel="report">Report Engine</button>
+                        <button class="config-subtab" data-subpanel="forum">Forum Host</button>
+                        <button class="config-subtab" data-subpanel="keyword">Keyword Optimizer</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- Insight Engine -->
+                        <div class="config-subpanel active" id="subpanel-insight">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="insight_api_key" data-config="engines.insight.api_key" placeholder="输入 Insight Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="insight_base_url" data-config="engines.insight.base_url" placeholder="https://api.moonshot.cn/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="insight_model_name" data-config="engines.insight.model_name" placeholder="kimi-k2-0711-preview">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 Kimi API，申请地址: <a href="https://platform.moonshot.cn/" target="_blank">https://platform.moonshot.cn/</a>
+                            </div>
+                        </div>
+
+                        <!-- Media Engine -->
+                        <div class="config-subpanel" id="subpanel-media">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="media_api_key" placeholder="输入 Media Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="media_base_url" placeholder="https://www.chataiapi.com/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="media_model_name" placeholder="gemini-2.5-pro">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 Gemini API，申请地址: <a href="https://www.chataiapi.com/" target="_blank">https://www.chataiapi.com/</a>
+                            </div>
+                        </div>
+
+                        <!-- Query Engine -->
+                        <div class="config-subpanel" id="subpanel-query">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="query_api_key" placeholder="输入 Query Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="query_base_url" placeholder="https://api.deepseek.com">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="query_model_name" placeholder="deepseek-reasoner">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 DeepSeek API，申请地址: <a href="https://www.deepseek.com/" target="_blank">https://www.deepseek.com/</a>
+                            </div>
+                        </div>
+
+                        <!-- Report Engine -->
+                        <div class="config-subpanel" id="subpanel-report">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="report_api_key" placeholder="输入 Report Engine API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="report_base_url" placeholder="https://www.chataiapi.com/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="report_model_name" placeholder="gemini-2.5-pro">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用 Gemini API，申请地址: <a href="https://www.chataiapi.com/" target="_blank">https://www.chataiapi.com/</a>
+                            </div>
+                        </div>
+
+                        <!-- Forum Host -->
+                        <div class="config-subpanel" id="subpanel-forum">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="forum_api_key" placeholder="输入 Forum Host API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="forum_base_url" placeholder="https://api.siliconflow.cn/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="forum_model_name" placeholder="Qwen/Qwen3-235B-A22B-Instruct-2507">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用硅基流动平台，申请地址: <a href="https://cloud.siliconflow.cn/" target="_blank">https://cloud.siliconflow.cn/</a>
+                            </div>
+                        </div>
+
+                        <!-- Keyword Optimizer -->
+                        <div class="config-subpanel" id="subpanel-keyword">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>API Key</label>
+                                    <input type="text" id="keyword_api_key" placeholder="输入 Keyword Optimizer API Key">
+                                </div>
+                                <div class="config-field">
+                                    <label>Base URL</label>
+                                    <input type="text" id="keyword_base_url" placeholder="https://api.siliconflow.cn/v1">
+                                </div>
+                                <div class="config-field">
+                                    <label>Model Name</label>
+                                    <input type="text" id="keyword_model_name" placeholder="Qwen/Qwen3-30B-A3B-Instruct-2507">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                推荐使用硅基流动平台，申请地址: <a href="https://cloud.siliconflow.cn/" target="_blank">https://cloud.siliconflow.cn/</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 检索与工具面板 -->
+                <div class="config-panel" id="panel-tools">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="tavily">Tavily Search</button>
+                        <button class="config-subtab" data-subpanel="bocha">Bocha Search</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- Tavily Search -->
+                        <div class="config-subpanel active" id="subpanel-tavily">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>Tavily API Key</label>
+                                    <input type="text" id="tavily_api_key" placeholder="输入 Tavily API Key">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                Tavily 提供新闻搜索功能，申请地址: <a href="https://www.tavily.com/" target="_blank">https://www.tavily.com/</a>
+                            </div>
+                        </div>
+
+                        <!-- Bocha Search -->
+                        <div class="config-subpanel" id="subpanel-bocha">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>Bocha API Key</label>
+                                    <input type="text" id="bocha_api_key" placeholder="输入 Bocha API Key">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                Bocha 提供多模态内容搜索，申请地址: <a href="https://open.bochaai.com/" target="_blank">https://open.bochaai.com/</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 爬虫面板 -->
+                <div class="config-panel" id="panel-crawler">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="database">数据库配置</button>
+                        <button class="config-subtab" data-subpanel="crawler-settings">爬虫设置</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- 数据库配置 -->
+                        <div class="config-subpanel active" id="subpanel-database">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>主机地址</label>
+                                    <input type="text" id="db_host" placeholder="localhost">
+                                </div>
+                                <div class="config-field">
+                                    <label>端口</label>
+                                    <input type="number" id="db_port" placeholder="3306">
+                                </div>
+                                <div class="config-field">
+                                    <label>用户名</label>
+                                    <input type="text" id="db_user" placeholder="root">
+                                </div>
+                                <div class="config-field">
+                                    <label>密码</label>
+                                    <input type="password" id="db_password" placeholder="数据库密码">
+                                </div>
+                                <div class="config-field">
+                                    <label>数据库名称</label>
+                                    <input type="text" id="db_name" placeholder="数据库名称">
+                                </div>
+                                <div class="config-field">
+                                    <label>字符集</label>
+                                    <input type="text" id="db_charset" placeholder="utf8mb4">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                配置 MySQL 数据库连接信息，用于存储爬取的社交媒体数据。<br>
+                                云数据库服务：可免费申请使用，联系邮箱 670939375@qq.com
+                            </div>
+                        </div>
+
+                        <!-- 爬虫设置 -->
+                        <div class="config-subpanel" id="subpanel-crawler-settings">
+                            <div class="config-placeholder">
+                                <strong>爬虫高级配置</strong><br>
+                                此部分功能正在开发中，敬请期待。<br>
+                                将支持自定义爬虫规则、频率控制、代理设置等功能。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高级配置面板 -->
+                <div class="config-panel" id="panel-advanced">
+                    <div class="config-placeholder">
+                        <strong>高级系统配置</strong><br>
+                        此部分功能正在开发中，敬请期待。<br>
+                        将支持日志级别、缓存设置、性能优化等高级参数配置。
+                    </div>
+                </div>
+
+                <!-- 情感分析面板 -->
+                <div class="config-panel" id="panel-sentiment">
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="sentiment-models">模型配置</button>
+                        <button class="config-subtab" data-subpanel="sentiment-settings">分析设置</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- 模型配置 -->
+                        <div class="config-subpanel active" id="subpanel-sentiment-models">
+                            <div class="config-placeholder">
+                                <strong>情感分析模型配置</strong><br>
+                                此部分功能正在开发中，敬请期待。<br>
+                                将支持多种情感分析模型选择和配置。
+                            </div>
+                        </div>
+
+                        <!-- 分析设置 -->
+                        <div class="config-subpanel" id="subpanel-sentiment-settings">
+                            <div class="config-placeholder">
+                                <strong>情感分析设置</strong><br>
+                                此部分功能正在开发中，敬请期待。<br>
+                                将支持情感分析阈值、分类标签等参数调整。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="config-footer">
+            <div class="config-status" id="configStatus"></div>
+            <div class="config-actions">
+                <button class="config-secondary" id="configCancel">取消</button>
+                <button class="config-primary" id="configSave">保存配置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let socket;
+        let currentApp = 'insight';
+        let appStatus = {
+            insight: 'stopped',
+            media: 'stopped',
+            query: 'stopped',
+            forum: 'running',  // Forum Engine 默认运行
+            report: 'stopped'  // Report Engine
+        };
+        let customTemplate = ''; // 存储用户上传的自定义模板内容
+
+        // 应用名称映射
+        const appNames = {
+            insight: 'Insight Engine',
+            media: 'Media Engine', 
+            query: 'Query Engine',
+            forum: 'Forum Engine',
+            report: 'Report Engine'
+        };
+
+        // 页面头部显示的完整Agent介绍
+        const agentTitles = {
+            insight: 'Insight Agent - 私有数据库挖掘',
+            media: 'Media Agent - 多模态内容分析', 
+            query: 'Query Agent - 精准信息搜索',
+            forum: 'Forum Engine - 多智能体交流',
+            report: 'Report Agent - 最终报告生成'
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSocket();
+            initializeEventListeners();
+            updateTime();
+            setInterval(updateTime, 1000);
+            checkStatus();
+            setInterval(checkStatus, 5000);
+            
+            // 初始化Report Engine锁定状态检查
+            checkReportLockStatus();
+            reportLockCheckInterval = setInterval(checkReportLockStatus, 10000); // 每10秒检查一次
+            
+            // 定期刷新控制台输出
+            setInterval(() => {
+                refreshConsoleOutput();
+            }, 1000);
+            
+            // 定期刷新论坛对话（实时更新）
+            setInterval(() => {
+                refreshForumMessages();
+            }, 2000);
+            
+            // 初始化论坛相关功能
+            initializeForum();
+            
+            // 延迟预加载iframe以确保应用启动完成
+            setTimeout(() => {
+                preloadIframes();
+            }, 3000);
+        });
+
+        // Socket.IO连接
+
 
     <script>
         // 全局变量
@@ -965,6 +1628,30 @@
 
             // 文件上传
             document.getElementById('templateFileInput').addEventListener('change', handleTemplateUpload);
+
+            // 配置按钮
+            document.getElementById('configButton').addEventListener('click', openConfig);
+            document.getElementById('configClose').addEventListener('click', closeConfig);
+            document.getElementById('configCancel').addEventListener('click', closeConfig);
+            document.getElementById('configSave').addEventListener('click', saveConfig);
+            document.getElementById('configBackdrop').addEventListener('click', closeConfig);
+
+            // 主标签页切换
+            document.querySelectorAll('.config-main-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const panel = this.dataset.panel;
+                    switchMainTab(panel);
+                });
+            });
+
+            // 所有config-subtab按钮
+            document.querySelectorAll('.config-subtab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const parentPanel = this.closest('.config-panel');
+                    const subpanel = this.dataset.subpanel;
+                    switchSubTab(parentPanel, subpanel);
+                });
+            });
 
             // 应用切换按钮
             document.querySelectorAll('.app-button').forEach(button => {
@@ -2357,6 +3044,194 @@
                 statusContent.innerHTML = statusHTML;
                 statusContent.className = `report-status ${statusClass}`;
             }
+        }
+
+        // 配置中心管理函数
+                function openConfig() {
+            document.getElementById('configBackdrop').classList.add('show');
+            document.getElementById('configModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            loadConfig();
+        }
+
+        function closeConfig() {
+            document.getElementById('configBackdrop').classList.remove('show');
+            document.getElementById('configModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function switchMainTab(panelId) {
+            document.querySelectorAll('.config-main-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.config-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            document.querySelector(`[data-panel="${panelId}"]`).classList.add('active');
+            document.getElementById(`panel-${panelId}`).classList.add('active');
+        }
+
+        function switchSubTab(parentPanel, subpanelId) {
+            parentPanel.querySelectorAll('.config-subtab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            parentPanel.querySelectorAll('.config-subpanel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            parentPanel.querySelector(`[data-subpanel="${subpanelId}"]`).classList.add('active');
+            parentPanel.querySelector(`#subpanel-${subpanelId}`).classList.add('active');
+        }
+
+        function loadConfig() {
+            const statusEl = document.getElementById('configStatus');
+            statusEl.textContent = '正在加载配置...';
+            statusEl.className = 'config-status';
+
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentConfig = data.config;
+                        populateConfigForm(data.config);
+                        statusEl.textContent = '配置加载成功';
+                        statusEl.className = 'config-status success';
+                        setTimeout(() => { statusEl.textContent = ''; }, 3000);
+                    } else {
+                        statusEl.textContent = '加载配置失败: ' + data.error;
+                        statusEl.className = 'config-status error';
+                    }
+                })
+                .catch(error => {
+                    console.error('加载配置失败:', error);
+                    statusEl.textContent = '加载配置失败: ' + error.message;
+                    statusEl.className = 'config-status error';
+                });
+        }
+
+        function populateConfigForm(config) {
+            if (config.engines) {
+                document.getElementById('insight_api_key').value = config.engines.insight.api_key || '';
+                document.getElementById('insight_base_url').value = config.engines.insight.base_url || '';
+                document.getElementById('insight_model_name').value = config.engines.insight.model_name || '';
+
+                document.getElementById('media_api_key').value = config.engines.media.api_key || '';
+                document.getElementById('media_base_url').value = config.engines.media.base_url || '';
+                document.getElementById('media_model_name').value = config.engines.media.model_name || '';
+
+                document.getElementById('query_api_key').value = config.engines.query.api_key || '';
+                document.getElementById('query_base_url').value = config.engines.query.base_url || '';
+                document.getElementById('query_model_name').value = config.engines.query.model_name || '';
+
+                document.getElementById('report_api_key').value = config.engines.report.api_key || '';
+                document.getElementById('report_base_url').value = config.engines.report.base_url || '';
+                document.getElementById('report_model_name').value = config.engines.report.model_name || '';
+
+                document.getElementById('forum_api_key').value = config.engines.forum_host.api_key || '';
+                document.getElementById('forum_base_url').value = config.engines.forum_host.base_url || '';
+                document.getElementById('forum_model_name').value = config.engines.forum_host.model_name || '';
+
+                document.getElementById('keyword_api_key').value = config.engines.keyword_optimizer.api_key || '';
+                document.getElementById('keyword_base_url').value = config.engines.keyword_optimizer.base_url || '';
+                document.getElementById('keyword_model_name').value = config.engines.keyword_optimizer.model_name || '';
+            }
+
+            if (config.tools) {
+                document.getElementById('tavily_api_key').value = config.tools.tavily_api_key || '';
+                document.getElementById('bocha_api_key').value = config.tools.bocha_api_key || '';
+            }
+
+            if (config.database) {
+                document.getElementById('db_host').value = config.database.host || '';
+                document.getElementById('db_port').value = config.database.port || 3306;
+                document.getElementById('db_user').value = config.database.user || '';
+                document.getElementById('db_password').value = config.database.password || '';
+                document.getElementById('db_name').value = config.database.name || '';
+                document.getElementById('db_charset').value = config.database.charset || 'utf8mb4';
+            }
+        }
+
+        function saveConfig() {
+            const statusEl = document.getElementById('configStatus');
+            statusEl.textContent = '正在保存配置...';
+            statusEl.className = 'config-status';
+
+            const configData = {
+                engines: {
+                    insight: {
+                        api_key: document.getElementById('insight_api_key').value,
+                        base_url: document.getElementById('insight_base_url').value,
+                        model_name: document.getElementById('insight_model_name').value
+                    },
+                    media: {
+                        api_key: document.getElementById('media_api_key').value,
+                        base_url: document.getElementById('media_base_url').value,
+                        model_name: document.getElementById('media_model_name').value
+                    },
+                    query: {
+                        api_key: document.getElementById('query_api_key').value,
+                        base_url: document.getElementById('query_base_url').value,
+                        model_name: document.getElementById('query_model_name').value
+                    },
+                    report: {
+                        api_key: document.getElementById('report_api_key').value,
+                        base_url: document.getElementById('report_base_url').value,
+                        model_name: document.getElementById('report_model_name').value
+                    },
+                    forum_host: {
+                        api_key: document.getElementById('forum_api_key').value,
+                        base_url: document.getElementById('forum_base_url').value,
+                        model_name: document.getElementById('forum_model_name').value
+                    },
+                    keyword_optimizer: {
+                        api_key: document.getElementById('keyword_api_key').value,
+                        base_url: document.getElementById('keyword_base_url').value,
+                        model_name: document.getElementById('keyword_model_name').value
+                    }
+                },
+                tools: {
+                    tavily_api_key: document.getElementById('tavily_api_key').value,
+                    bocha_api_key: document.getElementById('bocha_api_key').value
+                },
+                database: {
+                    host: document.getElementById('db_host').value,
+                    port: parseInt(document.getElementById('db_port').value) || 3306,
+                    user: document.getElementById('db_user').value,
+                    password: document.getElementById('db_password').value,
+                    name: document.getElementById('db_name').value,
+                    charset: document.getElementById('db_charset').value
+                }
+            };
+
+            fetch('/api/config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(configData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    statusEl.textContent = '配置保存成功！需要重启应用生效';
+                    statusEl.className = 'config-status success';
+                    showMessage('配置已保存', 'success');
+                    setTimeout(() => {
+                        closeConfig();
+                    }, 2000);
+                } else {
+                    statusEl.textContent = '保存失败: ' + data.error;
+                    statusEl.className = 'config-status error';
+                    showMessage('保存配置失败: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('保存配置失败:', error);
+                statusEl.textContent = '保存失败: ' + error.message;
+                statusEl.className = 'config-status error';
+                showMessage('保存配置失败: ' + error.message, 'error');
+            });
         }
     </script>
 </body>
