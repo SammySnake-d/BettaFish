@@ -795,6 +795,124 @@ def save_config():
             'error': str(e)
         }), 500
 
+@app.route('/api/config/backup/webdav', methods=['POST'])
+def backup_to_webdav():
+    """备份配置到WebDAV"""
+    try:
+        data = request.get_json()
+        if not data or 'config' not in data:
+            return jsonify({
+                'success': False,
+                'error': '无效的请求数据'
+            }), 400
+        
+        # 获取WebDAV连接信息
+        webdav_config = data.get('webdav', {})
+        webdav_url = webdav_config.get('url', os.getenv('WEBDAV_URL', ''))
+        webdav_username = webdav_config.get('username', os.getenv('WEBDAV_USERNAME', ''))
+        webdav_password = webdav_config.get('password', os.getenv('WEBDAV_PASSWORD', ''))
+        
+        if not all([webdav_url, webdav_username, webdav_password]):
+            return jsonify({
+                'success': False,
+                'error': 'WebDAV连接信息不完整'
+            }), 400
+        
+        # 导入WebDAV备份管理器
+        from utils.webdav_backup import get_webdav_manager
+        manager = get_webdav_manager(webdav_url, webdav_username, webdav_password)
+        
+        # 保存配置
+        filename = data.get('filename', None)
+        success, message = manager.save_config_to_webdav(data['config'], filename)
+        
+        return jsonify({
+            'success': success,
+            'message': message
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/config/restore/webdav', methods=['POST'])
+def restore_from_webdav():
+    """从WebDAV恢复配置"""
+    try:
+        data = request.get_json()
+        if not data or 'filename' not in data:
+            return jsonify({
+                'success': False,
+                'error': '缺少文件名'
+            }), 400
+        
+        # 获取WebDAV连接信息
+        webdav_config = data.get('webdav', {})
+        webdav_url = webdav_config.get('url', os.getenv('WEBDAV_URL', ''))
+        webdav_username = webdav_config.get('username', os.getenv('WEBDAV_USERNAME', ''))
+        webdav_password = webdav_config.get('password', os.getenv('WEBDAV_PASSWORD', ''))
+        
+        if not all([webdav_url, webdav_username, webdav_password]):
+            return jsonify({
+                'success': False,
+                'error': 'WebDAV连接信息不完整'
+            }), 400
+        
+        # 导入WebDAV备份管理器
+        from utils.webdav_backup import get_webdav_manager
+        manager = get_webdav_manager(webdav_url, webdav_username, webdav_password)
+        
+        # 加载配置
+        success, config_data, message = manager.load_config_from_webdav(data['filename'])
+        
+        return jsonify({
+            'success': success,
+            'config': config_data if success else {},
+            'message': message
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/config/list/webdav', methods=['POST'])
+def list_webdav_backups():
+    """列出WebDAV备份文件"""
+    try:
+        data = request.get_json()
+        
+        # 获取WebDAV连接信息
+        webdav_config = data.get('webdav', {})
+        webdav_url = webdav_config.get('url', os.getenv('WEBDAV_URL', ''))
+        webdav_username = webdav_config.get('username', os.getenv('WEBDAV_USERNAME', ''))
+        webdav_password = webdav_config.get('password', os.getenv('WEBDAV_PASSWORD', ''))
+        
+        if not all([webdav_url, webdav_username, webdav_password]):
+            return jsonify({
+                'success': False,
+                'error': 'WebDAV连接信息不完整'
+            }), 400
+        
+        # 导入WebDAV备份管理器
+        from utils.webdav_backup import get_webdav_manager
+        manager = get_webdav_manager(webdav_url, webdav_username, webdav_password)
+        
+        # 列出备份
+        success, file_list, message = manager.list_backups()
+        
+        return jsonify({
+            'success': success,
+            'files': file_list if success else [],
+            'message': message
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @socketio.on('connect')
 def handle_connect():
     """客户端连接"""

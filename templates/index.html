@@ -1067,11 +1067,117 @@
                         </div>
                         <p class="config-info">MindSpider 爬虫使用与主系统相同的数据库配置。数据库连接信息请在 config.py 或环境变量中配置。</p>
                     </div>
+
+                    <div class="config-section">
+                        <h3>高级参数配置 ⚙️</h3>
+                        <div class="config-group">
+                            <h4>Query Engine 高级参数</h4>
+                            <div class="config-field">
+                                <label for="queryMaxReflections">反思轮次</label>
+                                <input type="number" id="queryMaxReflections" min="1" max="10" value="2">
+                                <div class="config-info">Query Agent 内部思考和优化的轮次。增加可提升质量，但耗时更长。</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="queryMaxSearchResults">最大搜索结果数</label>
+                                <input type="number" id="queryMaxSearchResults" min="5" max="50" value="20">
+                                <div class="config-info">从搜索API获取的最大结果数量。</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="queryMaxContentLength">最大内容长度</label>
+                                <input type="number" id="queryMaxContentLength" min="1000" max="100000" value="20000">
+                                <div class="config-info">单次处理的最大文本字符数。</div>
+                            </div>
+                        </div>
+
+                        <div class="config-group">
+                            <h4>Media Engine 高级参数</h4>
+                            <div class="config-field">
+                                <label for="mediaMaxReflections">反思轮次</label>
+                                <input type="number" id="mediaMaxReflections" min="1" max="10" value="2">
+                            </div>
+                            <div class="config-field">
+                                <label for="mediaMaxParagraphs">最大段落数</label>
+                                <input type="number" id="mediaMaxParagraphs" min="1" max="20" value="5">
+                                <div class="config-info">生成报告的最大段落数量。</div>
+                            </div>
+                        </div>
+
+                        <div class="config-group">
+                            <h4>Insight Engine 高级参数</h4>
+                            <div class="config-field">
+                                <label for="insightMaxReflections">反思轮次</label>
+                                <input type="number" id="insightMaxReflections" min="1" max="10" value="3">
+                            </div>
+                            <div class="config-field">
+                                <label for="insightSearchHotContentLimit">热点内容搜索限制</label>
+                                <input type="number" id="insightSearchHotContentLimit" min="10" max="500" value="100">
+                                <div class="config-info">从数据库获取热点内容的最大数量。</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="insightGetCommentsLimit">评论获取限制</label>
+                                <input type="number" id="insightGetCommentsLimit" min="50" max="2000" value="500">
+                                <div class="config-info">每个话题获取的最大评论数。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>情感分析配置 💬</h3>
+                        <div class="config-group">
+                            <div class="config-field">
+                                <label for="sentimentModelType">模型类型</label>
+                                <select id="sentimentModelType">
+                                    <option value="multilingual">多语言模型（推荐）</option>
+                                    <option value="bert">中文BERT模型</option>
+                                    <option value="qwen">Qwen情感模型</option>
+                                </select>
+                                <div class="config-info">根据部署环境选择合适的情感分析模型。</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="sentimentConfidenceThreshold">置信度阈值</label>
+                                <input type="number" id="sentimentConfidenceThreshold" step="0.05" min="0" max="1" value="0.8">
+                            </div>
+                            <div class="config-field">
+                                <label for="sentimentBatchSize">批处理大小</label>
+                                <input type="number" id="sentimentBatchSize" min="1" max="128" value="32">
+                            </div>
+                            <div class="config-field">
+                                <label for="sentimentMaxSequenceLength">最大序列长度</label>
+                                <input type="number" id="sentimentMaxSequenceLength" min="64" max="2048" value="512">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>WebDAV 备份配置 ☁️</h3>
+                        <p class="config-info">配置WebDAV服务器，可以将配置自动备份到云端（如：坚果云、Nextcloud等）。</p>
+                        <div class="config-group">
+                            <div class="config-field">
+                                <label for="webdavUrl">WebDAV 服务器地址</label>
+                                <input type="text" id="webdavUrl" placeholder="例如：https://dav.jianguoyun.com/dav/">
+                                <div class="config-info">WebDAV服务器的完整URL地址。</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="webdavUsername">用户名</label>
+                                <input type="text" id="webdavUsername" placeholder="WebDAV用户名">
+                            </div>
+                            <div class="config-field">
+                                <label for="webdavPassword">密码/应用密码</label>
+                                <input type="password" id="webdavPassword" placeholder="WebDAV密码或应用专用密码">
+                                <div class="config-info">部分服务需要应用专用密码（如坚果云）。</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="config-modal-footer">
                     <button type="button" class="config-button secondary" onclick="resetConfigToDefaults()">恢复推荐配置</button>
-                    <div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="config-button secondary" onclick="exportConfigToLocal()">💾 导出到本地</button>
+                        <button type="button" class="config-button secondary" onclick="importConfigFromLocal()">📂 从本地导入</button>
+                        <input type="file" id="configFileInput" accept=".json" style="display: none;" onchange="handleConfigFileSelect(event)">
+                        <button type="button" class="config-button secondary" onclick="backupToWebDAV()">☁️ 备份到WebDAV</button>
+                        <button type="button" class="config-button secondary" onclick="restoreFromWebDAV()">☁️ 从WebDAV恢复</button>
                         <button type="button" class="config-button secondary" onclick="closeConfigModal()">取消</button>
                         <button type="submit" class="config-button">保存配置</button>
                     </div>

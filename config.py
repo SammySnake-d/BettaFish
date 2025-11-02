@@ -66,3 +66,44 @@ TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
 # Bocha API（申请地址：https://open.bochaai.com/）
 BOCHA_WEB_SEARCH_API_KEY = os.getenv("BOCHA_WEB_SEARCH_API_KEY", "")
+
+
+# ============================== 高级配置（可通过网页配置） ==============================
+# ⚙️ 这些高级参数可以通过网页配置界面的"高级配置"部分进行调整
+
+# Query Engine 高级配置
+QUERY_MAX_REFLECTIONS = int(os.getenv("QUERY_MAX_REFLECTIONS", 2))  # 反思轮次
+QUERY_MAX_SEARCH_RESULTS = int(os.getenv("QUERY_MAX_SEARCH_RESULTS", 20))  # 最大搜索结果数
+QUERY_MAX_CONTENT_LENGTH = int(os.getenv("QUERY_MAX_CONTENT_LENGTH", 20000))  # 最大内容长度
+QUERY_SEARCH_TIMEOUT = int(os.getenv("QUERY_SEARCH_TIMEOUT", 240))  # 搜索超时（秒）
+
+# Media Engine 高级配置
+MEDIA_MAX_REFLECTIONS = int(os.getenv("MEDIA_MAX_REFLECTIONS", 2))  # 反思轮次
+MEDIA_MAX_PARAGRAPHS = int(os.getenv("MEDIA_MAX_PARAGRAPHS", 5))  # 最大段落数
+MEDIA_MAX_CONTENT_LENGTH = int(os.getenv("MEDIA_MAX_CONTENT_LENGTH", 20000))  # 最大内容长度
+MEDIA_SEARCH_TIMEOUT = int(os.getenv("MEDIA_SEARCH_TIMEOUT", 240))  # 搜索超时（秒）
+
+# Insight Engine 高级配置
+INSIGHT_MAX_REFLECTIONS = int(os.getenv("INSIGHT_MAX_REFLECTIONS", 3))  # 反思轮次
+INSIGHT_MAX_PARAGRAPHS = int(os.getenv("INSIGHT_MAX_PARAGRAPHS", 6))  # 最大段落数
+INSIGHT_MAX_CONTENT_LENGTH = int(os.getenv("INSIGHT_MAX_CONTENT_LENGTH", 500000))  # 最大内容长度
+INSIGHT_SEARCH_TIMEOUT = int(os.getenv("INSIGHT_SEARCH_TIMEOUT", 240))  # 搜索超时（秒）
+
+# Insight Engine 搜索限制配置
+INSIGHT_SEARCH_HOT_CONTENT_LIMIT = int(os.getenv("INSIGHT_SEARCH_HOT_CONTENT_LIMIT", 100))  # 热点内容搜索限制
+INSIGHT_SEARCH_TOPIC_GLOBALLY_LIMIT = int(os.getenv("INSIGHT_SEARCH_TOPIC_GLOBALLY_LIMIT", 50))  # 全局话题搜索限制（每表）
+INSIGHT_SEARCH_TOPIC_BY_DATE_LIMIT = int(os.getenv("INSIGHT_SEARCH_TOPIC_BY_DATE_LIMIT", 100))  # 按日期话题搜索限制（每表）
+INSIGHT_GET_COMMENTS_LIMIT = int(os.getenv("INSIGHT_GET_COMMENTS_LIMIT", 500))  # 评论获取限制
+INSIGHT_SEARCH_TOPIC_ON_PLATFORM_LIMIT = int(os.getenv("INSIGHT_SEARCH_TOPIC_ON_PLATFORM_LIMIT", 200))  # 平台话题搜索限制
+INSIGHT_MAX_SEARCH_RESULTS_FOR_LLM = int(os.getenv("INSIGHT_MAX_SEARCH_RESULTS_FOR_LLM", 50))  # 传给LLM的最大结果数
+
+# 情感分析配置
+SENTIMENT_MODEL_TYPE = os.getenv("SENTIMENT_MODEL_TYPE", "multilingual")  # 模型类型
+SENTIMENT_CONFIDENCE_THRESHOLD = float(os.getenv("SENTIMENT_CONFIDENCE_THRESHOLD", 0.8))  # 置信度阈值
+SENTIMENT_BATCH_SIZE = int(os.getenv("SENTIMENT_BATCH_SIZE", 32))  # 批处理大小
+SENTIMENT_MAX_SEQUENCE_LENGTH = int(os.getenv("SENTIMENT_MAX_SEQUENCE_LENGTH", 512))  # 最大序列长度
+
+# WebDAV 备份配置（可选）
+WEBDAV_URL = os.getenv("WEBDAV_URL", "")  # WebDAV服务器URL
+WEBDAV_USERNAME = os.getenv("WEBDAV_USERNAME", "")  # WebDAV用户名
+WEBDAV_PASSWORD = os.getenv("WEBDAV_PASSWORD", "")  # WebDAV密码
