@@ -705,6 +705,42 @@ def get_config():
                 'deepseek_api_key_configured': bool(os.getenv('DEEPSEEK_API_KEY')),
                 'database_host': os.getenv('DB_HOST', ''),
                 'database_name': os.getenv('DB_NAME', '')
+            },
+            'advanced': {
+                'query': {
+                    'max_reflections': int(os.getenv('QUERY_MAX_REFLECTIONS', 2)),
+                    'max_search_results': int(os.getenv('QUERY_MAX_SEARCH_RESULTS', 20)),
+                    'max_content_length': int(os.getenv('QUERY_MAX_CONTENT_LENGTH', 20000)),
+                    'search_timeout': int(os.getenv('QUERY_SEARCH_TIMEOUT', 240))
+                },
+                'media': {
+                    'max_reflections': int(os.getenv('MEDIA_MAX_REFLECTIONS', 2)),
+                    'max_paragraphs': int(os.getenv('MEDIA_MAX_PARAGRAPHS', 5)),
+                    'max_content_length': int(os.getenv('MEDIA_MAX_CONTENT_LENGTH', 20000)),
+                    'search_timeout': int(os.getenv('MEDIA_SEARCH_TIMEOUT', 240))
+                },
+                'insight': {
+                    'max_reflections': int(os.getenv('INSIGHT_MAX_REFLECTIONS', 3)),
+                    'max_paragraphs': int(os.getenv('INSIGHT_MAX_PARAGRAPHS', 6)),
+                    'max_content_length': int(os.getenv('INSIGHT_MAX_CONTENT_LENGTH', 500000)),
+                    'search_timeout': int(os.getenv('INSIGHT_SEARCH_TIMEOUT', 240)),
+                    'search_hot_content_limit': int(os.getenv('INSIGHT_SEARCH_HOT_CONTENT_LIMIT', 100)),
+                    'search_topic_globally_limit': int(os.getenv('INSIGHT_SEARCH_TOPIC_GLOBALLY_LIMIT', 50)),
+                    'search_topic_by_date_limit': int(os.getenv('INSIGHT_SEARCH_TOPIC_BY_DATE_LIMIT', 100)),
+                    'get_comments_limit': int(os.getenv('INSIGHT_GET_COMMENTS_LIMIT', 500)),
+                    'search_topic_on_platform_limit': int(os.getenv('INSIGHT_SEARCH_TOPIC_ON_PLATFORM_LIMIT', 200)),
+                    'max_search_results_for_llm': int(os.getenv('INSIGHT_MAX_SEARCH_RESULTS_FOR_LLM', 50))
+                }
+            },
+            'sentiment': {
+                'model_type': os.getenv('SENTIMENT_MODEL_TYPE', 'multilingual'),
+                'confidence_threshold': float(os.getenv('SENTIMENT_CONFIDENCE_THRESHOLD', 0.8)),
+                'batch_size': int(os.getenv('SENTIMENT_BATCH_SIZE', 32)),
+                'max_sequence_length': int(os.getenv('SENTIMENT_MAX_SEQUENCE_LENGTH', 512))
+            },
+            'webdav': {
+                'url_configured': bool(os.getenv('WEBDAV_URL')),
+                'username_configured': bool(os.getenv('WEBDAV_USERNAME'))
             }
         }
         return jsonify({
@@ -760,6 +796,59 @@ def save_config():
         mindspider = data.get('mindspider', {})
         if 'deepseek_api_key' in mindspider and mindspider['deepseek_api_key']:
             os.environ['DEEPSEEK_API_KEY'] = mindspider['deepseek_api_key']
+        
+        # 更新高级配置
+        advanced = data.get('advanced', {})
+        if advanced:
+            # Query Engine 高级配置
+            query_config = advanced.get('query', {})
+            if query_config:
+                if 'max_reflections' in query_config:
+                    os.environ['QUERY_MAX_REFLECTIONS'] = str(query_config['max_reflections'])
+                if 'max_search_results' in query_config:
+                    os.environ['QUERY_MAX_SEARCH_RESULTS'] = str(query_config['max_search_results'])
+                if 'max_content_length' in query_config:
+                    os.environ['QUERY_MAX_CONTENT_LENGTH'] = str(query_config['max_content_length'])
+            
+            # Media Engine 高级配置
+            media_config = advanced.get('media', {})
+            if media_config:
+                if 'max_reflections' in media_config:
+                    os.environ['MEDIA_MAX_REFLECTIONS'] = str(media_config['max_reflections'])
+                if 'max_paragraphs' in media_config:
+                    os.environ['MEDIA_MAX_PARAGRAPHS'] = str(media_config['max_paragraphs'])
+            
+            # Insight Engine 高级配置
+            insight_config = advanced.get('insight', {})
+            if insight_config:
+                if 'max_reflections' in insight_config:
+                    os.environ['INSIGHT_MAX_REFLECTIONS'] = str(insight_config['max_reflections'])
+                if 'search_hot_content_limit' in insight_config:
+                    os.environ['INSIGHT_SEARCH_HOT_CONTENT_LIMIT'] = str(insight_config['search_hot_content_limit'])
+                if 'get_comments_limit' in insight_config:
+                    os.environ['INSIGHT_GET_COMMENTS_LIMIT'] = str(insight_config['get_comments_limit'])
+        
+        # 更新情感分析配置
+        sentiment = data.get('sentiment', {})
+        if sentiment:
+            if 'model_type' in sentiment:
+                os.environ['SENTIMENT_MODEL_TYPE'] = sentiment['model_type']
+            if 'confidence_threshold' in sentiment:
+                os.environ['SENTIMENT_CONFIDENCE_THRESHOLD'] = str(sentiment['confidence_threshold'])
+            if 'batch_size' in sentiment:
+                os.environ['SENTIMENT_BATCH_SIZE'] = str(sentiment['batch_size'])
+            if 'max_sequence_length' in sentiment:
+                os.environ['SENTIMENT_MAX_SEQUENCE_LENGTH'] = str(sentiment['max_sequence_length'])
+        
+        # 更新WebDAV配置
+        webdav = data.get('webdav', {})
+        if webdav:
+            if 'url' in webdav and webdav['url']:
+                os.environ['WEBDAV_URL'] = webdav['url']
+            if 'username' in webdav and webdav['username']:
+                os.environ['WEBDAV_USERNAME'] = webdav['username']
+            if 'password' in webdav and webdav['password']:
+                os.environ['WEBDAV_PASSWORD'] = webdav['password']
         
         component_updates = []
         

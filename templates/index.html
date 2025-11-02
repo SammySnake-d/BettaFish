@@ -2878,6 +2878,39 @@
                 if (storedConfig.mindspider && storedConfig.mindspider.deepseek_api_key) {
                     document.getElementById('mindspiderDeepseekApiKey').value = storedConfig.mindspider.deepseek_api_key;
                 }
+
+                // 加载高级配置
+                if (storedConfig.advanced) {
+                    if (storedConfig.advanced.query) {
+                        if (storedConfig.advanced.query.max_reflections) document.getElementById('queryMaxReflections').value = storedConfig.advanced.query.max_reflections;
+                        if (storedConfig.advanced.query.max_search_results) document.getElementById('queryMaxSearchResults').value = storedConfig.advanced.query.max_search_results;
+                        if (storedConfig.advanced.query.max_content_length) document.getElementById('queryMaxContentLength').value = storedConfig.advanced.query.max_content_length;
+                    }
+                    if (storedConfig.advanced.media) {
+                        if (storedConfig.advanced.media.max_reflections) document.getElementById('mediaMaxReflections').value = storedConfig.advanced.media.max_reflections;
+                        if (storedConfig.advanced.media.max_paragraphs) document.getElementById('mediaMaxParagraphs').value = storedConfig.advanced.media.max_paragraphs;
+                    }
+                    if (storedConfig.advanced.insight) {
+                        if (storedConfig.advanced.insight.max_reflections) document.getElementById('insightMaxReflections').value = storedConfig.advanced.insight.max_reflections;
+                        if (storedConfig.advanced.insight.search_hot_content_limit) document.getElementById('insightSearchHotContentLimit').value = storedConfig.advanced.insight.search_hot_content_limit;
+                        if (storedConfig.advanced.insight.get_comments_limit) document.getElementById('insightGetCommentsLimit').value = storedConfig.advanced.insight.get_comments_limit;
+                    }
+                }
+
+                // 加载情感分析配置
+                if (storedConfig.sentiment) {
+                    if (storedConfig.sentiment.model_type) document.getElementById('sentimentModelType').value = storedConfig.sentiment.model_type;
+                    if (storedConfig.sentiment.confidence_threshold) document.getElementById('sentimentConfidenceThreshold').value = storedConfig.sentiment.confidence_threshold;
+                    if (storedConfig.sentiment.batch_size) document.getElementById('sentimentBatchSize').value = storedConfig.sentiment.batch_size;
+                    if (storedConfig.sentiment.max_sequence_length) document.getElementById('sentimentMaxSequenceLength').value = storedConfig.sentiment.max_sequence_length;
+                }
+
+                // 加载WebDAV配置
+                if (storedConfig.webdav) {
+                    if (storedConfig.webdav.url) document.getElementById('webdavUrl').value = storedConfig.webdav.url;
+                    if (storedConfig.webdav.username) document.getElementById('webdavUsername').value = storedConfig.webdav.username;
+                    if (storedConfig.webdav.password) document.getElementById('webdavPassword').value = storedConfig.webdav.password;
+                }
             } else {
                 // 没有存储配置时，填充默认推荐值
                 for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
@@ -2908,6 +2941,28 @@
                 if (mindspiderInput) {
                     mindspiderInput.value = '';
                 }
+
+                // 恢复高级配置默认值
+                document.getElementById('queryMaxReflections').value = 2;
+                document.getElementById('queryMaxSearchResults').value = 20;
+                document.getElementById('queryMaxContentLength').value = 20000;
+
+                document.getElementById('mediaMaxReflections').value = 2;
+                document.getElementById('mediaMaxParagraphs').value = 5;
+
+                document.getElementById('insightMaxReflections').value = 3;
+                document.getElementById('insightSearchHotContentLimit').value = 100;
+                document.getElementById('insightGetCommentsLimit').value = 500;
+
+                document.getElementById('sentimentModelType').value = 'multilingual';
+                document.getElementById('sentimentConfidenceThreshold').value = 0.8;
+                document.getElementById('sentimentBatchSize').value = 32;
+                document.getElementById('sentimentMaxSequenceLength').value = 512;
+
+                document.getElementById('webdavUrl').value = '';
+                document.getElementById('webdavUsername').value = '';
+                document.getElementById('webdavPassword').value = '';
+
                 showMessage('已恢复推荐配置', 'success');
             }
         }
@@ -2923,7 +2978,14 @@
             const configData = {
                 engines: {},
                 search_tools: {},
-                mindspider: {}
+                mindspider: {},
+                advanced: {
+                    query: {},
+                    media: {},
+                    insight: {}
+                },
+                sentiment: {},
+                webdav: {}
             };
             
             // 收集引擎配置
@@ -2945,6 +3007,29 @@
 
             // 收集MindSpider配置
             configData.mindspider.deepseek_api_key = document.getElementById('mindspiderDeepseekApiKey').value.trim();
+
+            // 收集高级配置
+            configData.advanced.query.max_reflections = parseInt(document.getElementById('queryMaxReflections').value) || 2;
+            configData.advanced.query.max_search_results = parseInt(document.getElementById('queryMaxSearchResults').value) || 20;
+            configData.advanced.query.max_content_length = parseInt(document.getElementById('queryMaxContentLength').value) || 20000;
+
+            configData.advanced.media.max_reflections = parseInt(document.getElementById('mediaMaxReflections').value) || 2;
+            configData.advanced.media.max_paragraphs = parseInt(document.getElementById('mediaMaxParagraphs').value) || 5;
+
+            configData.advanced.insight.max_reflections = parseInt(document.getElementById('insightMaxReflections').value) || 3;
+            configData.advanced.insight.search_hot_content_limit = parseInt(document.getElementById('insightSearchHotContentLimit').value) || 100;
+            configData.advanced.insight.get_comments_limit = parseInt(document.getElementById('insightGetCommentsLimit').value) || 500;
+
+            // 收集情感分析配置
+            configData.sentiment.model_type = document.getElementById('sentimentModelType').value;
+            configData.sentiment.confidence_threshold = parseFloat(document.getElementById('sentimentConfidenceThreshold').value) || 0.8;
+            configData.sentiment.batch_size = parseInt(document.getElementById('sentimentBatchSize').value) || 32;
+            configData.sentiment.max_sequence_length = parseInt(document.getElementById('sentimentMaxSequenceLength').value) || 512;
+
+            // 收集WebDAV配置
+            configData.webdav.url = document.getElementById('webdavUrl').value.trim();
+            configData.webdav.username = document.getElementById('webdavUsername').value.trim();
+            configData.webdav.password = document.getElementById('webdavPassword').value.trim();
             
             // 保存到 localStorage
             if (saveConfigToStorage(configData)) {
@@ -3012,6 +3097,198 @@
                   });
             }
         })();
+        
+        // 导出配置到本地文件
+        function exportConfigToLocal() {
+            const config = loadConfigFromStorage();
+            if (!config) {
+                showMessage('没有找到配置', 'error');
+                return;
+            }
+
+            const backup = {
+                version: '1.0',
+                backup_time: new Date().toISOString(),
+                config: config
+            };
+
+            const jsonStr = JSON.stringify(backup, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+            a.download = `weiyu_config_${timestamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showMessage('配置已导出', 'success');
+        }
+
+        // 从本地文件导入配置
+        function importConfigFromLocal() {
+            document.getElementById('configFileInput').click();
+        }
+
+        // 处理文件选择
+        function handleConfigFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    if (!backup.config) {
+                        throw new Error('无效的备份文件格式');
+                    }
+
+                    // 保存配置
+                    if (saveConfigToStorage(backup.config)) {
+                        showMessage('配置导入成功！页面将刷新以应用新配置...', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        throw new Error('保存配置失败');
+                    }
+                } catch (error) {
+                    showMessage('导入失败: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+
+            // 清除文件输入，允许重复选择相同文件
+            event.target.value = '';
+        }
+
+        // 备份到WebDAV
+        async function backupToWebDAV() {
+            const config = loadConfigFromStorage();
+            if (!config) {
+                showMessage('没有找到配置', 'error');
+                return;
+            }
+
+            const webdavUrl = document.getElementById('webdavUrl').value.trim();
+            const webdavUsername = document.getElementById('webdavUsername').value.trim();
+            const webdavPassword = document.getElementById('webdavPassword').value.trim();
+
+            if (!webdavUrl || !webdavUsername || !webdavPassword) {
+                showMessage('请先填写完整的WebDAV配置信息', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config/backup/webdav', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        config: config,
+                        webdav: {
+                            url: webdavUrl,
+                            username: webdavUsername,
+                            password: webdavPassword
+                        }
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showMessage('配置已备份到WebDAV', 'success');
+                } else {
+                    throw new Error(result.error || '备份失败');
+                }
+            } catch (error) {
+                showMessage('WebDAV备份失败: ' + error.message, 'error');
+            }
+        }
+
+        // 从WebDAV恢复配置
+        async function restoreFromWebDAV() {
+            const webdavUrl = document.getElementById('webdavUrl').value.trim();
+            const webdavUsername = document.getElementById('webdavUsername').value.trim();
+            const webdavPassword = document.getElementById('webdavPassword').value.trim();
+
+            if (!webdavUrl || !webdavUsername || !webdavPassword) {
+                showMessage('请先填写完整的WebDAV配置信息', 'error');
+                return;
+            }
+
+            try {
+                // 首先列出备份文件
+                const listResponse = await fetch('/api/config/list/webdav', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        webdav: {
+                            url: webdavUrl,
+                            username: webdavUsername,
+                            password: webdavPassword
+                        }
+                    })
+                });
+
+                const listResult = await listResponse.json();
+                if (!listResult.success) {
+                    throw new Error(listResult.error || '无法列出备份文件');
+                }
+
+                const files = listResult.files;
+                if (files.length === 0) {
+                    showMessage('WebDAV上没有找到备份文件', 'info');
+                    return;
+                }
+
+                // 使用最新的备份文件
+                const latestFile = files[0];
+                const filename = latestFile.filename;
+
+                if (!confirm(`确定要恢复备份：${filename}？当前配置将被覆盖。`)) {
+                    return;
+                }
+
+                // 恢复配置
+                const restoreResponse = await fetch('/api/config/restore/webdav', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        filename: filename,
+                        webdav: {
+                            url: webdavUrl,
+                            username: webdavUsername,
+                            password: webdavPassword
+                        }
+                    })
+                });
+
+                const restoreResult = await restoreResponse.json();
+                if (restoreResult.success) {
+                    // 保存恢复的配置
+                    if (saveConfigToStorage(restoreResult.config)) {
+                        showMessage('配置从WebDAV恢复成功！页面将刷新以应用新配置...', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        throw new Error('保存配置失败');
+                    }
+                } else {
+                    throw new Error(restoreResult.error || '恢复失败');
+                }
+            } catch (error) {
+                showMessage('WebDAV恢复失败: ' + error.message, 'error');
+            }
+        }
         
         // 点击模态框外部关闭
         document.getElementById('configModal').addEventListener('click', function(event) {
