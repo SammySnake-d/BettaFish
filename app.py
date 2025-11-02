@@ -660,6 +660,128 @@ def search():
         'results': results
     })
 
+@app.route('/api/config', methods=['GET'])
+def get_config():
+    """获取配置信息（不包含敏感信息的完整值，只返回是否已配置）"""
+    try:
+        config_info = {
+            'engines': {
+                'insight': {
+                    'api_key_configured': bool(os.getenv('INSIGHT_ENGINE_API_KEY')),
+                    'base_url': os.getenv('INSIGHT_ENGINE_BASE_URL', ''),
+                    'model_name': os.getenv('INSIGHT_ENGINE_MODEL_NAME', '')
+                },
+                'media': {
+                    'api_key_configured': bool(os.getenv('MEDIA_ENGINE_API_KEY')),
+                    'base_url': os.getenv('MEDIA_ENGINE_BASE_URL', ''),
+                    'model_name': os.getenv('MEDIA_ENGINE_MODEL_NAME', '')
+                },
+                'query': {
+                    'api_key_configured': bool(os.getenv('QUERY_ENGINE_API_KEY')),
+                    'base_url': os.getenv('QUERY_ENGINE_BASE_URL', ''),
+                    'model_name': os.getenv('QUERY_ENGINE_MODEL_NAME', '')
+                },
+                'report': {
+                    'api_key_configured': bool(os.getenv('REPORT_ENGINE_API_KEY')),
+                    'base_url': os.getenv('REPORT_ENGINE_BASE_URL', ''),
+                    'model_name': os.getenv('REPORT_ENGINE_MODEL_NAME', '')
+                },
+                'forum': {
+                    'api_key_configured': bool(os.getenv('FORUM_HOST_API_KEY')),
+                    'base_url': os.getenv('FORUM_HOST_BASE_URL', ''),
+                    'model_name': os.getenv('FORUM_HOST_MODEL_NAME', '')
+                },
+                'keyword_optimizer': {
+                    'api_key_configured': bool(os.getenv('KEYWORD_OPTIMIZER_API_KEY')),
+                    'base_url': os.getenv('KEYWORD_OPTIMIZER_BASE_URL', ''),
+                    'model_name': os.getenv('KEYWORD_OPTIMIZER_MODEL_NAME', '')
+                }
+            },
+            'search_tools': {
+                'tavily_api_key_configured': bool(os.getenv('TAVILY_API_KEY')),
+                'bocha_api_key_configured': bool(os.getenv('BOCHA_WEB_SEARCH_API_KEY'))
+            }
+        }
+        return jsonify({
+            'success': True,
+            'config': config_info
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/config', methods=['POST'])
+def save_config():
+    """保存配置（在运行时设置环境变量）"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': '无效的请求数据'
+            }), 400
+        
+        # 更新环境变量
+        engines = data.get('engines', {})
+        for engine_name, engine_config in engines.items():
+            prefix_map = {
+                'insight': 'INSIGHT_ENGINE',
+                'media': 'MEDIA_ENGINE',
+                'query': 'QUERY_ENGINE',
+                'report': 'REPORT_ENGINE',
+                'forum': 'FORUM_HOST',
+                'keyword_optimizer': 'KEYWORD_OPTIMIZER'
+            }
+            
+            if engine_name in prefix_map:
+                prefix = prefix_map[engine_name]
+                if 'api_key' in engine_config and engine_config['api_key']:
+                    os.environ[f'{prefix}_API_KEY'] = engine_config['api_key']
+                if 'base_url' in engine_config and engine_config['base_url']:
+                    os.environ[f'{prefix}_BASE_URL'] = engine_config['base_url']
+                if 'model_name' in engine_config and engine_config['model_name']:
+                    os.environ[f'{prefix}_MODEL_NAME'] = engine_config['model_name']
+        
+        # 更新搜索工具配置
+        search_tools = data.get('search_tools', {})
+        if 'tavily_api_key' in search_tools and search_tools['tavily_api_key']:
+            os.environ['TAVILY_API_KEY'] = search_tools['tavily_api_key']
+        if 'bocha_api_key' in search_tools and search_tools['bocha_api_key']:
+            os.environ['BOCHA_WEB_SEARCH_API_KEY'] = search_tools['bocha_api_key']
+        
+        component_updates = []
+        
+        # 重新初始化 ReportEngine 以应用最新配置
+        if REPORT_ENGINE_AVAILABLE:
+            try:
+                if initialize_report_engine():
+                    component_updates.append('ReportEngine 已重新初始化')
+                else:
+                    component_updates.append('ReportEngine 重新初始化失败，使用旧配置继续运行')
+            except Exception as re_error:
+                component_updates.append(f'ReportEngine 初始化异常: {re_error}')
+        
+        # 重置论坛主持人，使其在下次调用时使用最新配置
+        try:
+            from ForumEngine.llm_host import reset_forum_host
+            reset_forum_host()
+            component_updates.append('ForumHost 已刷新配置')
+        except Exception as forum_error:
+            component_updates.append(f'ForumHost 配置更新失败: {forum_error}')
+        
+        return jsonify({
+            'success': True,
+            'message': '配置已保存',
+            'updates': component_updates
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @socketio.on('connect')
 def handle_connect():
     """客户端连接"""

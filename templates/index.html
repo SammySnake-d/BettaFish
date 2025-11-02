@@ -745,13 +745,199 @@
             color: #666;
             font-size: 14px;
         }
+
+        /* 配置模态框样式 */
+        .config-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .config-modal.show {
+            display: block;
+        }
+
+        .config-modal-content {
+            background-color: #ffffff;
+            margin: 2% auto;
+            padding: 0;
+            border: 3px solid #000000;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .config-modal-header {
+            padding: 20px;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000000;
+        }
+
+        .config-modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .config-close {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .config-close:hover {
+            color: #cccccc;
+        }
+
+        .config-modal-body {
+            padding: 30px;
+        }
+
+        .config-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #000000;
+            background-color: #f9f9f9;
+        }
+
+        .config-section h3 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+        }
+
+        .config-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+        }
+
+        .config-group h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .config-field {
+            margin-bottom: 15px;
+        }
+
+        .config-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333333;
+        }
+
+        .config-field input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #cccccc;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            box-sizing: border-box;
+        }
+
+        .config-field input:focus {
+            outline: none;
+            border-color: #000000;
+        }
+
+        .config-field input[type="password"] {
+            letter-spacing: 2px;
+        }
+
+        .config-modal-footer {
+            padding: 20px 30px;
+            background-color: #f5f5f5;
+            border-top: 2px solid #000000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .config-button {
+            padding: 12px 25px;
+            border: 2px solid #000000;
+            background-color: #000000;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .config-button:hover {
+            background-color: #333333;
+        }
+
+        .config-button.secondary {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .config-button.secondary:hover {
+            background-color: #f0f0f0;
+        }
+
+        .config-info {
+            font-size: 12px;
+            color: #666666;
+            margin-top: 5px;
+        }
+
+        .config-status {
+            padding: 10px 15px;
+            border: 2px solid;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .config-status.success {
+            border-color: #4a6741;
+            background-color: #f0f5ed;
+            color: #4a6741;
+        }
+
+        .config-status.error {
+            border-color: #8b4513;
+            background-color: #fdf5e6;
+            color: #8b4513;
+        }
+
+        .config-button:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- 搜索框区域 -->
         <div class="search-section">
-            <div class="search-title">微舆 - 致力于打造简洁通用的舆情分析平台</div>
+            <div class="search-title">
+                微舆 - 致力于打造简洁通用的舆情分析平台
+                <button class="config-button" id="configButton" onclick="openConfigModal()" style="float: right; padding: 8px 15px; border: 2px solid #000000; background-color: #ffffff; color: #000000; cursor: pointer; font-size: 14px; font-weight: bold; transition: all 0.3s ease;">⚙️ 配置</button>
+            </div>
             <div class="search-box">
                 <input type="text" class="search-input" id="searchInput" placeholder="请输入要分析的内容...">
                 <button class="search-button" id="searchButton">开始</button>
@@ -831,6 +1017,55 @@
 
     <!-- 消息提示 -->
     <div class="message" id="message"></div>
+
+    <!-- 配置模态框 -->
+    <div class="config-modal" id="configModal" role="dialog" aria-modal="true" aria-labelledby="configModalTitle">
+        <div class="config-modal-content">
+            <div class="config-modal-header">
+                <h2 id="configModalTitle">配置与密钥管理</h2>
+                <button type="button" class="config-close" onclick="closeConfigModal()" aria-label="关闭配置窗口">×</button>
+            </div>
+            <form id="configForm">
+                <div class="config-modal-body">
+                    <div id="configStatus" class="config-status" style="display: none;"></div>
+
+                    <div class="config-section">
+                        <h3>引擎 LLM 配置</h3>
+                        <p class="config-info">在这里配置各个引擎所使用的大语言模型服务的 API Key、Base URL 与模型名称。配置内容会保存在浏览器本地，刷新页面后自动生效。</p>
+                        <div id="engineConfigContainer"></div>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>检索与工具配置</h3>
+                        <div class="config-group">
+                            <h4>Tavily 搜索</h4>
+                            <div class="config-field">
+                                <label for="tavilyApiKey">Tavily API Key</label>
+                                <input type="text" id="tavilyApiKey" name="tavily_api_key" placeholder="例如：tvly-xxxxxxxx">
+                                <div class="config-info">用于 Query Agent 的联网检索能力。</div>
+                            </div>
+                        </div>
+                        <div class="config-group">
+                            <h4>Bocha Web Search</h4>
+                            <div class="config-field">
+                                <label for="bochaApiKey">Bocha API Key</label>
+                                <input type="text" id="bochaApiKey" name="bocha_api_key" placeholder="例如：sk-xxxxxxxx">
+                                <div class="config-info">用于 Media Agent 的网页搜索与多模态分析。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-modal-footer">
+                    <button type="button" class="config-button secondary" onclick="resetConfigToDefaults()">恢复推荐配置</button>
+                    <div>
+                        <button type="button" class="config-button secondary" onclick="closeConfigModal()">取消</button>
+                        <button type="submit" class="config-button">保存配置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         // 全局变量
@@ -2337,6 +2572,325 @@
                 statusContent.className = `report-status ${statusClass}`;
             }
         }
+
+        // ==================== 配置管理功能 ====================
+        
+        const CONFIG_STORAGE_KEY = 'weiyu_llm_config';
+        
+        // 引擎配置模板
+        const engineConfigs = {
+            insight: {
+                name: 'Insight Engine',
+                description: '私有数据库挖掘',
+                defaultConfig: {
+                    base_url: 'https://api.moonshot.cn/v1',
+                    model_name: 'kimi-k2-0711-preview',
+                    api_key: ''
+                }
+            },
+            media: {
+                name: 'Media Engine',
+                description: '多模态内容分析',
+                defaultConfig: {
+                    base_url: 'https://www.chataiapi.com/v1',
+                    model_name: 'gemini-2.5-pro',
+                    api_key: ''
+                }
+            },
+            query: {
+                name: 'Query Engine',
+                description: '精准信息搜索',
+                defaultConfig: {
+                    base_url: 'https://api.deepseek.com',
+                    model_name: 'deepseek-reasoner',
+                    api_key: ''
+                }
+            },
+            report: {
+                name: 'Report Engine',
+                description: '最终报告生成',
+                defaultConfig: {
+                    base_url: 'https://www.chataiapi.com/v1',
+                    model_name: 'gemini-2.5-pro',
+                    api_key: ''
+                }
+            },
+            forum: {
+                name: 'Forum Host',
+                description: '多智能体主持人',
+                defaultConfig: {
+                    base_url: 'https://api.siliconflow.cn/v1',
+                    model_name: 'Qwen/Qwen3-235B-A22B-Instruct-2507',
+                    api_key: ''
+                }
+            },
+            keyword_optimizer: {
+                name: 'Keyword Optimizer',
+                description: 'SQL 关键词优化',
+                defaultConfig: {
+                    base_url: 'https://api.siliconflow.cn/v1',
+                    model_name: 'Qwen/Qwen3-30B-A3B-Instruct-2507',
+                    api_key: ''
+                }
+            }
+        };
+        
+        // 从 localStorage 加载配置
+        function loadConfigFromStorage() {
+            try {
+                const storedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
+                if (storedConfig) {
+                    return JSON.parse(storedConfig);
+                }
+            } catch (error) {
+                console.error('加载配置失败:', error);
+            }
+            return null;
+        }
+        
+        // 保存配置到 localStorage
+        function saveConfigToStorage(config) {
+            try {
+                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
+                return true;
+            } catch (error) {
+                console.error('保存配置失败:', error);
+                return false;
+            }
+        }
+        
+        // 打开配置模态框
+        function openConfigModal() {
+            const modal = document.getElementById('configModal');
+            modal.classList.add('show');
+            
+            const statusDiv = document.getElementById('configStatus');
+            if (statusDiv) {
+                statusDiv.style.display = 'none';
+                statusDiv.textContent = '';
+                statusDiv.innerHTML = '';
+            }
+            
+            // 渲染引擎配置表单
+            renderEngineConfigForms();
+            
+            // 加载当前配置
+            loadCurrentConfig();
+        }
+        
+        // 关闭配置模态框
+        function closeConfigModal() {
+            const modal = document.getElementById('configModal');
+            modal.classList.remove('show');
+        }
+        
+        // 渲染引擎配置表单
+        function renderEngineConfigForms() {
+            const container = document.getElementById('engineConfigContainer');
+            container.innerHTML = '';
+            
+            for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'config-group';
+                groupDiv.innerHTML = `
+                    <h4>${engineInfo.name} - ${engineInfo.description}</h4>
+                    <div class="config-field">
+                        <label for="${engineKey}_base_url">Base URL</label>
+                        <input type="text" 
+                               id="${engineKey}_base_url" 
+                               name="${engineKey}_base_url" 
+                               placeholder="${engineInfo.defaultConfig.base_url}">
+                    </div>
+                    <div class="config-field">
+                        <label for="${engineKey}_model_name">Model Name</label>
+                        <input type="text" 
+                               id="${engineKey}_model_name" 
+                               name="${engineKey}_model_name" 
+                               placeholder="${engineInfo.defaultConfig.model_name}">
+                    </div>
+                    <div class="config-field">
+                        <label for="${engineKey}_api_key">API Key</label>
+                        <input type="password" 
+                               id="${engineKey}_api_key" 
+                               name="${engineKey}_api_key" 
+                               placeholder="输入 API Key">
+                        <div class="config-info">API Key 会安全保存在浏览器本地。</div>
+                    </div>
+                `;
+                container.appendChild(groupDiv);
+            }
+        }
+        
+        // 加载当前配置
+        function loadCurrentConfig() {
+            const storedConfig = loadConfigFromStorage();
+            
+            if (storedConfig) {
+                // 加载引擎配置
+                if (storedConfig.engines) {
+                    for (const [engineKey, engineConfig] of Object.entries(storedConfig.engines)) {
+                        const baseUrlInput = document.getElementById(`${engineKey}_base_url`);
+                        const modelNameInput = document.getElementById(`${engineKey}_model_name`);
+                        const apiKeyInput = document.getElementById(`${engineKey}_api_key`);
+
+                        if (baseUrlInput) {
+                            baseUrlInput.value = engineConfig.base_url || engineConfigs[engineKey].defaultConfig.base_url;
+                        }
+                        if (modelNameInput) {
+                            modelNameInput.value = engineConfig.model_name || engineConfigs[engineKey].defaultConfig.model_name;
+                        }
+                        if (apiKeyInput && engineConfig.api_key) {
+                            apiKeyInput.value = engineConfig.api_key;
+                        }
+                    }
+                }
+                
+                // 加载搜索工具配置
+                if (storedConfig.search_tools) {
+                    if (storedConfig.search_tools.tavily_api_key) {
+                        document.getElementById('tavilyApiKey').value = storedConfig.search_tools.tavily_api_key;
+                    }
+                    if (storedConfig.search_tools.bocha_api_key) {
+                        document.getElementById('bochaApiKey').value = storedConfig.search_tools.bocha_api_key;
+                    }
+                }
+            } else {
+                // 没有存储配置时，填充默认推荐值
+                for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
+                    const baseUrlInput = document.getElementById(`${engineKey}_base_url`);
+                    const modelNameInput = document.getElementById(`${engineKey}_model_name`);
+                    if (baseUrlInput) baseUrlInput.value = engineInfo.defaultConfig.base_url;
+                    if (modelNameInput) modelNameInput.value = engineInfo.defaultConfig.model_name;
+                }
+            }
+        }
+        
+        // 恢复推荐配置
+        function resetConfigToDefaults() {
+            if (confirm('确定要恢复推荐的默认配置吗？这不会清除已输入的 API Key。')) {
+                for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
+                    const baseUrlInput = document.getElementById(`${engineKey}_base_url`);
+                    const modelNameInput = document.getElementById(`${engineKey}_model_name`);
+                    if (baseUrlInput) baseUrlInput.value = engineInfo.defaultConfig.base_url;
+                    if (modelNameInput) modelNameInput.value = engineInfo.defaultConfig.model_name;
+                }
+                showMessage('已恢复推荐配置', 'success');
+            }
+        }
+        
+        // 处理配置表单提交
+        document.getElementById('configForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('configStatus');
+            statusDiv.style.display = 'none';
+            
+            // 收集配置数据
+            const configData = {
+                engines: {},
+                search_tools: {}
+            };
+            
+            // 收集引擎配置
+            for (const engineKey of Object.keys(engineConfigs)) {
+                const baseUrl = document.getElementById(`${engineKey}_base_url`).value.trim();
+                const modelName = document.getElementById(`${engineKey}_model_name`).value.trim();
+                const apiKey = document.getElementById(`${engineKey}_api_key`).value.trim();
+                
+                configData.engines[engineKey] = {
+                    base_url: baseUrl || engineConfigs[engineKey].defaultConfig.base_url,
+                    model_name: modelName || engineConfigs[engineKey].defaultConfig.model_name,
+                    api_key: apiKey
+                };
+            }
+            
+            // 收集搜索工具配置
+            configData.search_tools.tavily_api_key = document.getElementById('tavilyApiKey').value.trim();
+            configData.search_tools.bocha_api_key = document.getElementById('bochaApiKey').value.trim();
+            
+            // 保存到 localStorage
+            if (saveConfigToStorage(configData)) {
+                // 发送到后端
+                try {
+                    const response = await fetch('/api/config', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(configData)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        statusDiv.className = 'config-status success';
+                        const updates = Array.isArray(result.updates) ? result.updates.filter(Boolean) : [];
+                        if (updates.length > 0) {
+                            statusDiv.innerHTML = '✓ 配置保存成功！<br>' + updates.map(update => `• ${update}`).join('<br>');
+                        } else {
+                            statusDiv.textContent = '✓ 配置保存成功！配置已生效。';
+                        }
+                        statusDiv.style.display = 'block';
+                        showMessage('配置保存成功', 'success');
+                        
+                        // 2秒后关闭模态框
+                        setTimeout(() => {
+                            closeConfigModal();
+                        }, 2000);
+                    } else {
+                        throw new Error(result.error || '保存失败');
+                    }
+                } catch (error) {
+                    statusDiv.className = 'config-status error';
+                    statusDiv.textContent = '✗ 保存失败: ' + error.message;
+                    statusDiv.style.display = 'block';
+                    showMessage('配置保存失败: ' + error.message, 'error');
+                }
+            } else {
+                statusDiv.className = 'config-status error';
+                statusDiv.textContent = '✗ 无法保存到浏览器存储，请检查浏览器设置。';
+                statusDiv.style.display = 'block';
+            }
+        });
+        
+        // 在页面加载时自动应用存储的配置
+        (function initializeConfig() {
+            const storedConfig = loadConfigFromStorage();
+            if (storedConfig) {
+                fetch('/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(storedConfig)
+                }).then(response => response.json())
+                  .then(result => {
+                      if (result.success) {
+                          console.log('已从浏览器存储加载配置');
+                      }
+                  })
+                  .catch(error => {
+                      console.error('自动加载配置失败:', error);
+                  });
+            }
+        })();
+        
+        // 点击模态框外部关闭
+        document.getElementById('configModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeConfigModal();
+            }
+        });
+        
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('configModal');
+                if (modal.classList.contains('show')) {
+                    closeConfigModal();
+                }
+            }
+        });
     </script>
 </body>
 </html>
