@@ -1832,7 +1832,7 @@
             
             for (const [app, port] of Object.entries(ports)) {
                 const iframe = document.createElement('iframe');
-                iframe.src = `http://${window.location.hostname}:${port}`;
+                iframe.src = `${window.location.protocol}//${window.location.hostname}:${port}`;
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = 'none';
