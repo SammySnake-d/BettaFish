@@ -242,9 +242,12 @@ INSIGHT_ENGINE_MODEL_NAME = "kimi-k2-0711-preview"
 
 #### 4.2 Database Initialization
 
-**Option 1: Use Local Database**
+Starting from v1.0.0, the system automatically checks and initializes the database schema during startup, as long as the `DB_*` settings in `config.py` are configured correctly. You can run the application without manually executing the initialization script.
+
+> If you still prefer manual initialization (for example, preparing the database on a remote server in advance), you can run:
+
 ```bash
-# Local MySQL database initialization
+# Local MySQL database initialization (optional)
 cd MindSpider
 python schema/init_database.py
 ```
