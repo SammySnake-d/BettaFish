@@ -34,12 +34,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install uv and expose it on PATH
+ENV PATH="/root/.local/bin:${PATH}"
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
 WORKDIR /app
 
 # Install Python dependencies first to leverage Docker layer caching
 COPY requirements.txt ./ 
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt && \
+RUN uv pip install --system -r requirements.txt && \
     python -m playwright install chromium
 
 # Copy application source

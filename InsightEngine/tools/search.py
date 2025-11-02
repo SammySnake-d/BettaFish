@@ -86,6 +86,41 @@ class MediaCrawlerDB:
         required = ['host', 'user', 'password', 'db']
         if missing := [k for k in required if not self.db_config[k]]:
             raise ValueError(f"数据库配置缺失! 请设置环境变量或在代码中提供: {', '.join([f'DB_{k.upper()}' for k in missing])}")
+        
+        # 自动检查并初始化数据库
+        self._auto_init_database()
+
+    def _auto_init_database(self):
+        """自动检查并初始化数据库"""
+        try:
+            # 尝试导入自动初始化模块
+            import sys
+            from pathlib import Path
+            project_root = Path(__file__).resolve().parents[2]
+            if str(project_root) not in sys.path:
+                sys.path.insert(0, str(project_root))
+            
+            from MindSpider.schema.auto_init_db import check_and_init_database
+            
+            # 创建一个临时配置对象
+            class TempConfig:
+                pass
+            
+            temp_config = TempConfig()
+            temp_config.DB_HOST = self.db_config['host']
+            temp_config.DB_PORT = self.db_config['port']
+            temp_config.DB_USER = self.db_config['user']
+            temp_config.DB_PASSWORD = self.db_config['password']
+            temp_config.DB_NAME = self.db_config['db']
+            temp_config.DB_CHARSET = self.db_config['charset']
+            
+            # 静默模式检查并初始化
+            check_and_init_database(temp_config, silent=True)
+            
+        except Exception as e:
+            # 如果自动初始化失败，只打印警告，不中断程序
+            print(f"数据库自动初始化警告: {e}")
+            print("请确保数据库已正确初始化，或手动运行: python MindSpider/schema/init_database.py")
 
     def _execute_query(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
         conn = None

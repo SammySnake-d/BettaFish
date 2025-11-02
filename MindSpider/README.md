@@ -1,3 +1,10 @@
+> [!warning]
+> 好像最近项目中用来请求每日热点新闻的api接口被ban了，可以自己部署一下[newsnow](https://github.com/ourongxing/newsnow)，很快的可以一键部署，然后替换掉这个URL即可，最近一个月我也会commit一版更通用的解决方案。
+> ```python
+> #新闻API基础URL
+> BASE URL = "https://newsnow.busiyi.world"
+> ```
+
 # MindSpider - 专为舆情分析设计的AI爬虫
 
 > 免责声明：
@@ -13,6 +20,12 @@ MindSpider是一个基于Agent技术的智能舆情爬虫系统，通过AI自动
 
 - 模块一：Search Agent从包括微博、知乎、github、酷安等 **13个** 社媒平台、技术论坛识别热点新闻，并维护一个每日话题分析表。
 - 模块二：全平台爬虫深度爬取每个话题的细粒度舆情反馈。
+
+<div align="center">
+<img src="img\example.png" alt="banner" width="700">
+
+MindSpider 运行示例
+</div>
 
 ### 技术架构
 
@@ -223,10 +236,10 @@ playwright install
 
 ### 4. 配置系统
 
-编辑 `config.py` 文件，设置数据库和API配置：
+编辑项目根目录下的 `config.py` 文件，设置数据库和API配置：
 
 ```python
-# MySQL数据库配置
+# MySQL数据库配置（MindSpider与舆情系统共用）
 DB_HOST = "your_database_host"
 DB_PORT = 3306
 DB_USER = "your_username"
@@ -234,9 +247,12 @@ DB_PASSWORD = "your_password"
 DB_NAME = "mindspider"
 DB_CHARSET = "utf8mb4"
 
-# DeepSeek API密钥
+# DeepSeek API密钥（用于MindSpider话题提取）
 DEEPSEEK_API_KEY = "your_deepseek_api_key"
 ```
+
+> [!note]
+> `MindSpider/config.py` 会自动导入项目根目录的数据库配置，因此只需在一个地方维护数据库连接信息。
 
 ### 5. 初始化系统
 

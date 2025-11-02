@@ -1,45 +1,48 @@
 # -*- coding: utf-8 -*-
 """
-MindSpider 配置文件 - 统一使用根目录的配置
-注意：此配置文件现在从根目录的 config.py 导入配置，无需单独配置
+MindSpider配置文件
+从外层系统导入数据库配置，保证MindSpider和舆情系统使用同一个数据库
 """
 
-import os
-import sys
+import importlib.util
+from pathlib import Path
 
-# 添加项目根目录到路径
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
+# 外层系统的配置文件路径
+ROOT_CONFIG_PATH = Path(__file__).resolve().parents[1] / "config.py"
 
-# 从根目录配置文件导入数据库配置
-try:
-    from config import (
-        DB_HOST,
-        DB_PORT,
-        DB_USER,
-        DB_PASSWORD,
-        DB_NAME,
-        DB_CHARSET
+if not ROOT_CONFIG_PATH.exists():
+    raise FileNotFoundError(
+        "未找到外层系统的配置文件 config.py，请确保项目根目录下存在该文件。"
     )
-except ImportError:
-    # 如果导入失败，使用默认值
-    DB_HOST = os.getenv("DB_HOST", "your_host")
-    DB_PORT = int(os.getenv("DB_PORT", 3306))
-    DB_USER = os.getenv("DB_USER", "your_username")
-    DB_PASSWORD = os.getenv("DB_PASSWORD", "your_password")
-    DB_NAME = os.getenv("DB_NAME", "mindspider")
-    DB_CHARSET = os.getenv("DB_CHARSET", "utf8mb4")
 
-# DeepSeek API密钥 - 现在可以通过网页配置或环境变量设置
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+# 动态导入外层系统配置
+spec = importlib.util.spec_from_file_location("outer_config", ROOT_CONFIG_PATH)
+outer_config = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(outer_config)
 
-# 如果没有设置，可以尝试从主配置导入
-if not DEEPSEEK_API_KEY:
-    try:
-        from config import QUERY_ENGINE_API_KEY, QUERY_ENGINE_BASE_URL
-        # 如果Query Engine使用DeepSeek，则使用其API Key
-        if "deepseek" in QUERY_ENGINE_BASE_URL.lower():
-            DEEPSEEK_API_KEY = QUERY_ENGINE_API_KEY
-    except ImportError:
-        pass
+required_db_fields = (
+    "DB_HOST",
+    "DB_PORT",
+    "DB_USER",
+    "DB_PASSWORD",
+    "DB_NAME",
+    "DB_CHARSET",
+)
+
+missing_fields = [field for field in required_db_fields if not hasattr(outer_config, field)]
+if missing_fields:
+    raise AttributeError(
+        "外层系统的 config.py 缺少以下数据库配置项: " + ", ".join(missing_fields)
+    )
+
+# 数据库配置（与外层系统保持一致）
+DB_HOST = outer_config.DB_HOST
+DB_PORT = outer_config.DB_PORT
+DB_USER = outer_config.DB_USER
+DB_PASSWORD = outer_config.DB_PASSWORD
+DB_NAME = outer_config.DB_NAME
+DB_CHARSET = outer_config.DB_CHARSET
+
+# MindSpider特有配置
+# DeepSeek API密钥（用于话题提取）
+DEEPSEEK_API_KEY = getattr(outer_config, "DEEPSEEK_API_KEY", "your_deepseek_api_key")

@@ -65,29 +65,19 @@ class Config:
             # Provider is no longer used, but keep the attribute for compatibility.
             self.llm_provider = self.llm_model_name
 
-    def validate(self, strict: bool = False) -> bool:
+    def validate(self) -> bool:
         """Validate configuration."""
-        if strict:
-            if not self.llm_api_key:
-                print("错误: Insight Engine LLM API Key 未设置 (INSIGHT_ENGINE_API_KEY)。")
-                return False
+        if not self.llm_api_key:
+            print("错误: Insight Engine LLM API Key 未设置 (INSIGHT_ENGINE_API_KEY)。")
+            return False
 
-            if not self.llm_model_name:
-                print("错误: Insight Engine 模型名称未设置 (INSIGHT_ENGINE_MODEL_NAME)。")
-                return False
+        if not self.llm_model_name:
+            print("错误: Insight Engine 模型名称未设置 (INSIGHT_ENGINE_MODEL_NAME)。")
+            return False
 
-            if not all([self.db_host, self.db_user, self.db_password, self.db_name]):
-                print("错误: 数据库连接信息不完整，请检查 config.py 中的 DB_* 配置。")
-                return False
-        else:
-            if not self.llm_api_key:
-                print("⚠️  警告: Insight Engine LLM API Key 未设置，请在网页配置界面配置后使用。")
-
-            if not self.llm_model_name:
-                print("⚠️  警告: Insight Engine 模型名称未设置，请在网页配置界面配置后使用。")
-
-            if not all([self.db_host, self.db_user, self.db_password, self.db_name]):
-                print("⚠️  警告: 数据库连接信息不完整，请在 config.py 中配置 DB_*。")
+        if not all([self.db_host, self.db_user, self.db_password, self.db_name]):
+            print("错误: 数据库连接信息不完整，请检查 config.py 中的 DB_* 配置。")
+            return False
 
         return True
 

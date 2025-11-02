@@ -16,6 +16,7 @@ import signal
 import atexit
 import requests
 import logging
+import importlib
 from pathlib import Path
 
 # 导入ReportEngine
@@ -579,6 +580,188 @@ def stop_forum_monitoring_api():
     except Exception as e:
         return jsonify({'success': False, 'message': f'停止论坛失败: {str(e)}'})
 
+@app.route('/api/config', methods=['GET'])
+def get_config():
+    """获取配置信息"""
+    try:
+        config_module = importlib.import_module('config')
+        config_module = importlib.reload(config_module)
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'加载配置失败: {e}'})
+
+    config_data = {
+        'database': {
+            'host': getattr(config_module, 'DB_HOST', ''),
+            'port': getattr(config_module, 'DB_PORT', 3306),
+            'user': getattr(config_module, 'DB_USER', ''),
+            'password': getattr(config_module, 'DB_PASSWORD', ''),
+            'name': getattr(config_module, 'DB_NAME', ''),
+            'charset': getattr(config_module, 'DB_CHARSET', 'utf8mb4')
+        },
+        'engines': {
+            'insight': {
+                'api_key': getattr(config_module, 'INSIGHT_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'INSIGHT_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'INSIGHT_ENGINE_MODEL_NAME', '')
+            },
+            'media': {
+                'api_key': getattr(config_module, 'MEDIA_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'MEDIA_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'MEDIA_ENGINE_MODEL_NAME', '')
+            },
+            'query': {
+                'api_key': getattr(config_module, 'QUERY_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'QUERY_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'QUERY_ENGINE_MODEL_NAME', '')
+            },
+            'report': {
+                'api_key': getattr(config_module, 'REPORT_ENGINE_API_KEY', ''),
+                'base_url': getattr(config_module, 'REPORT_ENGINE_BASE_URL', ''),
+                'model_name': getattr(config_module, 'REPORT_ENGINE_MODEL_NAME', '')
+            },
+            'forum_host': {
+                'api_key': getattr(config_module, 'FORUM_HOST_API_KEY', ''),
+                'base_url': getattr(config_module, 'FORUM_HOST_BASE_URL', ''),
+                'model_name': getattr(config_module, 'FORUM_HOST_MODEL_NAME', '')
+            },
+            'keyword_optimizer': {
+                'api_key': getattr(config_module, 'KEYWORD_OPTIMIZER_API_KEY', ''),
+                'base_url': getattr(config_module, 'KEYWORD_OPTIMIZER_BASE_URL', ''),
+                'model_name': getattr(config_module, 'KEYWORD_OPTIMIZER_MODEL_NAME', '')
+            }
+        },
+        'tools': {
+            'tavily_api_key': getattr(config_module, 'TAVILY_API_KEY', ''),
+            'bocha_api_key': getattr(config_module, 'BOCHA_WEB_SEARCH_API_KEY', '')
+        }
+    }
+
+    return jsonify({'success': True, 'config': config_data})
+
+
+@app.route('/api/config', methods=['POST'])
+def save_config():
+    """保存配置信息"""
+    try:
+        config_data = request.json or {}
+        if not config_data:
+            return jsonify({'success': False, 'error': '无效的配置数据'})
+
+        config_file = Path('config.py')
+        if not config_file.exists():
+            return jsonify({'success': False, 'error': '配置文件不存在'})
+
+        with open(config_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        def update_line(line, var_name, value, is_number=False):
+            if f'{var_name}' not in line:
+                return line
+            stripped = line.rstrip('\n')
+            lstripped = stripped.lstrip()
+            if not (lstripped.startswith(f'{var_name} ') or lstripped.startswith(f'{var_name}=')):
+                return line
+            prefix_whitespace = stripped[:len(stripped) - len(lstripped)]
+            eq_index = lstripped.find('=')
+            if eq_index == -1:
+                return line
+            before_eq = lstripped[:eq_index + 1]
+            after_eq = lstripped[eq_index + 1:]
+            comment = ''
+            if '#' in after_eq:
+                value_part, comment = after_eq.split('#', 1)
+                comment = '#' + comment
+            else:
+                value_part = after_eq
+            leading_len = len(value_part) - len(value_part.lstrip())
+            trailing_len = len(value_part) - len(value_part.rstrip())
+            leading = value_part[:leading_len] if leading_len > 0 else ' '
+            trailing = value_part[len(value_part) - trailing_len:] if trailing_len > 0 else ''
+            if is_number:
+                new_value = str(value)
+            else:
+                escaped_value = str(value).replace('\\', '\\\\').replace('"', '\\"')
+                new_value = f'"{escaped_value}"'
+            return f'{prefix_whitespace}{before_eq}{leading}{new_value}{trailing}{comment}\n'
+
+        db_conf = config_data.get('database', {})
+        engines_conf = config_data.get('engines', {})
+        tools_conf = config_data.get('tools', {})
+
+        port_value = db_conf.get('port', 3306)
+        try:
+            port_value = int(port_value)
+        except (TypeError, ValueError):
+            port_value = 3306
+
+        updated_lines = []
+        for line in lines:
+            updated_line = line
+
+            if db_conf:
+                updated_line = update_line(updated_line, 'DB_HOST', db_conf.get('host', ''))
+                updated_line = update_line(updated_line, 'DB_PORT', port_value, is_number=True)
+                updated_line = update_line(updated_line, 'DB_USER', db_conf.get('user', ''))
+                updated_line = update_line(updated_line, 'DB_PASSWORD', db_conf.get('password', ''))
+                updated_line = update_line(updated_line, 'DB_NAME', db_conf.get('name', ''))
+                updated_line = update_line(updated_line, 'DB_CHARSET', db_conf.get('charset', 'utf8mb4'))
+
+            if engines_conf:
+                insight_conf = engines_conf.get('insight', {})
+                if insight_conf:
+                    updated_line = update_line(updated_line, 'INSIGHT_ENGINE_API_KEY', insight_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'INSIGHT_ENGINE_BASE_URL', insight_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'INSIGHT_ENGINE_MODEL_NAME', insight_conf.get('model_name', ''))
+
+                media_conf = engines_conf.get('media', {})
+                if media_conf:
+                    updated_line = update_line(updated_line, 'MEDIA_ENGINE_API_KEY', media_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'MEDIA_ENGINE_BASE_URL', media_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'MEDIA_ENGINE_MODEL_NAME', media_conf.get('model_name', ''))
+
+                query_conf = engines_conf.get('query', {})
+                if query_conf:
+                    updated_line = update_line(updated_line, 'QUERY_ENGINE_API_KEY', query_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'QUERY_ENGINE_BASE_URL', query_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'QUERY_ENGINE_MODEL_NAME', query_conf.get('model_name', ''))
+
+                report_conf = engines_conf.get('report', {})
+                if report_conf:
+                    updated_line = update_line(updated_line, 'REPORT_ENGINE_API_KEY', report_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'REPORT_ENGINE_BASE_URL', report_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'REPORT_ENGINE_MODEL_NAME', report_conf.get('model_name', ''))
+
+                forum_conf = engines_conf.get('forum_host', {})
+                if forum_conf:
+                    updated_line = update_line(updated_line, 'FORUM_HOST_API_KEY', forum_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'FORUM_HOST_BASE_URL', forum_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'FORUM_HOST_MODEL_NAME', forum_conf.get('model_name', ''))
+
+                keyword_conf = engines_conf.get('keyword_optimizer', {})
+                if keyword_conf:
+                    updated_line = update_line(updated_line, 'KEYWORD_OPTIMIZER_API_KEY', keyword_conf.get('api_key', ''))
+                    updated_line = update_line(updated_line, 'KEYWORD_OPTIMIZER_BASE_URL', keyword_conf.get('base_url', ''))
+                    updated_line = update_line(updated_line, 'KEYWORD_OPTIMIZER_MODEL_NAME', keyword_conf.get('model_name', ''))
+
+            if tools_conf:
+                updated_line = update_line(updated_line, 'TAVILY_API_KEY', tools_conf.get('tavily_api_key', ''))
+                updated_line = update_line(updated_line, 'BOCHA_WEB_SEARCH_API_KEY', tools_conf.get('bocha_api_key', ''))
+
+            updated_lines.append(updated_line)
+
+        with open(config_file, 'w', encoding='utf-8') as f:
+            f.writelines(updated_lines)
+
+        importlib.invalidate_caches()
+        config_module = importlib.import_module('config')
+        importlib.reload(config_module)
+
+        return jsonify({'success': True, 'message': '配置已保存'})
+    except Exception as e:
+        logging.exception("保存配置失败")
+        return jsonify({'success': False, 'error': str(e)})
+
+
 @app.route('/api/forum/log')
 def get_forum_log():
     """获取ForumEngine的forum.log内容"""
@@ -660,396 +843,6 @@ def search():
         'results': results
     })
 
-@app.route('/api/config', methods=['GET'])
-def get_config():
-    """获取配置信息（不包含敏感信息的完整值，只返回是否已配置）"""
-    try:
-        config_info = {
-            'engines': {
-                'insight': {
-                    'api_key_configured': bool(os.getenv('INSIGHT_ENGINE_API_KEY')),
-                    'base_url': os.getenv('INSIGHT_ENGINE_BASE_URL', ''),
-                    'model_name': os.getenv('INSIGHT_ENGINE_MODEL_NAME', '')
-                },
-                'media': {
-                    'api_key_configured': bool(os.getenv('MEDIA_ENGINE_API_KEY')),
-                    'base_url': os.getenv('MEDIA_ENGINE_BASE_URL', ''),
-                    'model_name': os.getenv('MEDIA_ENGINE_MODEL_NAME', '')
-                },
-                'query': {
-                    'api_key_configured': bool(os.getenv('QUERY_ENGINE_API_KEY')),
-                    'base_url': os.getenv('QUERY_ENGINE_BASE_URL', ''),
-                    'model_name': os.getenv('QUERY_ENGINE_MODEL_NAME', '')
-                },
-                'report': {
-                    'api_key_configured': bool(os.getenv('REPORT_ENGINE_API_KEY')),
-                    'base_url': os.getenv('REPORT_ENGINE_BASE_URL', ''),
-                    'model_name': os.getenv('REPORT_ENGINE_MODEL_NAME', '')
-                },
-                'forum': {
-                    'api_key_configured': bool(os.getenv('FORUM_HOST_API_KEY')),
-                    'base_url': os.getenv('FORUM_HOST_BASE_URL', ''),
-                    'model_name': os.getenv('FORUM_HOST_MODEL_NAME', '')
-                },
-                'keyword_optimizer': {
-                    'api_key_configured': bool(os.getenv('KEYWORD_OPTIMIZER_API_KEY')),
-                    'base_url': os.getenv('KEYWORD_OPTIMIZER_BASE_URL', ''),
-                    'model_name': os.getenv('KEYWORD_OPTIMIZER_MODEL_NAME', '')
-                }
-            },
-            'search_tools': {
-                'tavily_api_key_configured': bool(os.getenv('TAVILY_API_KEY')),
-                'bocha_api_key_configured': bool(os.getenv('BOCHA_WEB_SEARCH_API_KEY'))
-            },
-            'mindspider': {
-                'deepseek_api_key_configured': bool(os.getenv('DEEPSEEK_API_KEY')),
-                'database_host': os.getenv('DB_HOST', ''),
-                'database_name': os.getenv('DB_NAME', '')
-            },
-            'database': {
-                'host': os.getenv('DB_HOST', ''),
-                'port': os.getenv('DB_PORT', ''),
-                'user': os.getenv('DB_USER', ''),
-                'name': os.getenv('DB_NAME', ''),
-                'charset': os.getenv('DB_CHARSET', 'utf8mb4')
-            },
-            'advanced': {
-                'query': {
-                    'max_reflections': int(os.getenv('QUERY_MAX_REFLECTIONS', 2)),
-                    'max_search_results': int(os.getenv('QUERY_MAX_SEARCH_RESULTS', 20)),
-                    'max_content_length': int(os.getenv('QUERY_MAX_CONTENT_LENGTH', 20000)),
-                    'search_timeout': int(os.getenv('QUERY_SEARCH_TIMEOUT', 240))
-                },
-                'media': {
-                    'max_reflections': int(os.getenv('MEDIA_MAX_REFLECTIONS', 2)),
-                    'max_paragraphs': int(os.getenv('MEDIA_MAX_PARAGRAPHS', 5)),
-                    'max_content_length': int(os.getenv('MEDIA_MAX_CONTENT_LENGTH', 20000)),
-                    'search_timeout': int(os.getenv('MEDIA_SEARCH_TIMEOUT', 240))
-                },
-                'insight': {
-                    'max_reflections': int(os.getenv('INSIGHT_MAX_REFLECTIONS', 3)),
-                    'max_paragraphs': int(os.getenv('INSIGHT_MAX_PARAGRAPHS', 6)),
-                    'max_content_length': int(os.getenv('INSIGHT_MAX_CONTENT_LENGTH', 500000)),
-                    'search_timeout': int(os.getenv('INSIGHT_SEARCH_TIMEOUT', 240)),
-                    'search_hot_content_limit': int(os.getenv('INSIGHT_SEARCH_HOT_CONTENT_LIMIT', 100)),
-                    'search_topic_globally_limit': int(os.getenv('INSIGHT_SEARCH_TOPIC_GLOBALLY_LIMIT', 50)),
-                    'search_topic_by_date_limit': int(os.getenv('INSIGHT_SEARCH_TOPIC_BY_DATE_LIMIT', 100)),
-                    'get_comments_limit': int(os.getenv('INSIGHT_GET_COMMENTS_LIMIT', 500)),
-                    'search_topic_on_platform_limit': int(os.getenv('INSIGHT_SEARCH_TOPIC_ON_PLATFORM_LIMIT', 200)),
-                    'max_search_results_for_llm': int(os.getenv('INSIGHT_MAX_SEARCH_RESULTS_FOR_LLM', 50))
-                }
-            },
-            'sentiment': {
-                'model_type': os.getenv('SENTIMENT_MODEL_TYPE', 'multilingual'),
-                'confidence_threshold': float(os.getenv('SENTIMENT_CONFIDENCE_THRESHOLD', 0.8)),
-                'batch_size': int(os.getenv('SENTIMENT_BATCH_SIZE', 32)),
-                'max_sequence_length': int(os.getenv('SENTIMENT_MAX_SEQUENCE_LENGTH', 512))
-            },
-            'webdav': {
-                'url_configured': bool(os.getenv('WEBDAV_URL')),
-                'username_configured': bool(os.getenv('WEBDAV_USERNAME'))
-            }
-        }
-        return jsonify({
-            'success': True,
-            'config': config_info
-        })
-    except Exception as e:
-        print(f"获取配置失败: {e}")
-        return jsonify({
-            'success': False,
-            'error': '获取配置失败：发生意外错误'
-        }), 500
-
-@app.route('/api/config', methods=['POST'])
-def save_config():
-    """保存配置（在运行时设置环境变量）"""
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({
-                'success': False,
-                'error': '无效的请求数据'
-            }), 400
-        
-        # 更新环境变量
-        engines = data.get('engines', {})
-        for engine_name, engine_config in engines.items():
-            prefix_map = {
-                'insight': 'INSIGHT_ENGINE',
-                'media': 'MEDIA_ENGINE',
-                'query': 'QUERY_ENGINE',
-                'report': 'REPORT_ENGINE',
-                'forum': 'FORUM_HOST',
-                'keyword_optimizer': 'KEYWORD_OPTIMIZER'
-            }
-            
-            if engine_name in prefix_map:
-                prefix = prefix_map[engine_name]
-                if 'api_key' in engine_config and engine_config['api_key']:
-                    os.environ[f'{prefix}_API_KEY'] = engine_config['api_key']
-                if 'base_url' in engine_config and engine_config['base_url']:
-                    os.environ[f'{prefix}_BASE_URL'] = engine_config['base_url']
-                if 'model_name' in engine_config and engine_config['model_name']:
-                    os.environ[f'{prefix}_MODEL_NAME'] = engine_config['model_name']
-        
-        # 更新搜索工具配置
-        search_tools = data.get('search_tools', {})
-        if 'tavily_api_key' in search_tools and search_tools['tavily_api_key']:
-            os.environ['TAVILY_API_KEY'] = search_tools['tavily_api_key']
-        if 'bocha_api_key' in search_tools and search_tools['bocha_api_key']:
-            os.environ['BOCHA_WEB_SEARCH_API_KEY'] = search_tools['bocha_api_key']
-        
-        # 更新MindSpider配置
-        mindspider = data.get('mindspider', {})
-        if 'deepseek_api_key' in mindspider and mindspider['deepseek_api_key']:
-            os.environ['DEEPSEEK_API_KEY'] = mindspider['deepseek_api_key']
-        
-        # 更新数据库配置
-        database = data.get('database', {})
-        if database:
-            if 'host' in database and database['host']:
-                os.environ['DB_HOST'] = database['host']
-            if 'port' in database and database['port']:
-                os.environ['DB_PORT'] = str(database['port'])
-            if 'user' in database and database['user']:
-                os.environ['DB_USER'] = database['user']
-            if 'password' in database and database['password']:
-                os.environ['DB_PASSWORD'] = database['password']
-            if 'name' in database and database['name']:
-                os.environ['DB_NAME'] = database['name']
-            if 'charset' in database and database['charset']:
-                os.environ['DB_CHARSET'] = database['charset']
-
-            try:
-                import config as global_config
-                if 'DB_HOST' in os.environ:
-                    global_config.DB_HOST = os.environ['DB_HOST']
-                if 'DB_PORT' in os.environ:
-                    global_config.DB_PORT = int(os.environ['DB_PORT']) if os.environ['DB_PORT'] else global_config.DB_PORT
-                if 'DB_USER' in os.environ:
-                    global_config.DB_USER = os.environ['DB_USER']
-                if 'DB_PASSWORD' in os.environ:
-                    global_config.DB_PASSWORD = os.environ['DB_PASSWORD']
-                if 'DB_NAME' in os.environ:
-                    global_config.DB_NAME = os.environ['DB_NAME']
-                if 'DB_CHARSET' in os.environ:
-                    global_config.DB_CHARSET = os.environ['DB_CHARSET']
-            except ImportError:
-                pass
-        
-        # 更新高级配置
-        advanced = data.get('advanced', {})
-        if advanced:
-            # Query Engine 高级配置
-            query_config = advanced.get('query', {})
-            if query_config:
-                if 'max_reflections' in query_config:
-                    os.environ['QUERY_MAX_REFLECTIONS'] = str(query_config['max_reflections'])
-                if 'max_search_results' in query_config:
-                    os.environ['QUERY_MAX_SEARCH_RESULTS'] = str(query_config['max_search_results'])
-                if 'max_content_length' in query_config:
-                    os.environ['QUERY_MAX_CONTENT_LENGTH'] = str(query_config['max_content_length'])
-            
-            # Media Engine 高级配置
-            media_config = advanced.get('media', {})
-            if media_config:
-                if 'max_reflections' in media_config:
-                    os.environ['MEDIA_MAX_REFLECTIONS'] = str(media_config['max_reflections'])
-                if 'max_paragraphs' in media_config:
-                    os.environ['MEDIA_MAX_PARAGRAPHS'] = str(media_config['max_paragraphs'])
-            
-            # Insight Engine 高级配置
-            insight_config = advanced.get('insight', {})
-            if insight_config:
-                if 'max_reflections' in insight_config:
-                    os.environ['INSIGHT_MAX_REFLECTIONS'] = str(insight_config['max_reflections'])
-                if 'search_hot_content_limit' in insight_config:
-                    os.environ['INSIGHT_SEARCH_HOT_CONTENT_LIMIT'] = str(insight_config['search_hot_content_limit'])
-                if 'get_comments_limit' in insight_config:
-                    os.environ['INSIGHT_GET_COMMENTS_LIMIT'] = str(insight_config['get_comments_limit'])
-        
-        # 更新情感分析配置
-        sentiment = data.get('sentiment', {})
-        if sentiment:
-            if 'model_type' in sentiment:
-                os.environ['SENTIMENT_MODEL_TYPE'] = sentiment['model_type']
-            if 'confidence_threshold' in sentiment:
-                os.environ['SENTIMENT_CONFIDENCE_THRESHOLD'] = str(sentiment['confidence_threshold'])
-            if 'batch_size' in sentiment:
-                os.environ['SENTIMENT_BATCH_SIZE'] = str(sentiment['batch_size'])
-            if 'max_sequence_length' in sentiment:
-                os.environ['SENTIMENT_MAX_SEQUENCE_LENGTH'] = str(sentiment['max_sequence_length'])
-        
-        # 更新WebDAV配置
-        webdav = data.get('webdav', {})
-        if webdav:
-            if 'url' in webdav and webdav['url']:
-                os.environ['WEBDAV_URL'] = webdav['url']
-            if 'username' in webdav and webdav['username']:
-                os.environ['WEBDAV_USERNAME'] = webdav['username']
-            if 'password' in webdav and webdav['password']:
-                os.environ['WEBDAV_PASSWORD'] = webdav['password']
-        
-        component_updates = []
-        
-        # 重新初始化 ReportEngine 以应用最新配置
-        if REPORT_ENGINE_AVAILABLE:
-            try:
-                if initialize_report_engine():
-                    component_updates.append('ReportEngine 已重新初始化')
-                else:
-                    component_updates.append('ReportEngine 重新初始化失败，使用旧配置继续运行')
-            except Exception as re_error:
-                component_updates.append(f'ReportEngine 初始化异常: {re_error}')
-        
-        # 重置论坛主持人，使其在下次调用时使用最新配置
-        try:
-            from ForumEngine.llm_host import reset_forum_host
-            reset_forum_host()
-            component_updates.append('ForumHost 已刷新配置')
-        except Exception as forum_error:
-            component_updates.append(f'ForumHost 配置更新失败: {forum_error}')
-        
-        if mindspider.get('deepseek_api_key'):
-            component_updates.append('MindSpider DeepSeek API 已更新')
-        
-        if database:
-            component_updates.append('数据库配置已更新（Insight Engine 和 MindSpider 将使用新配置）')
-        
-        return jsonify({
-            'success': True,
-            'message': '配置已保存',
-            'updates': component_updates
-        })
-    except Exception as e:
-        print(f"保存配置失败: {e}")
-        return jsonify({
-            'success': False,
-            'error': '保存配置失败：发生意外错误'
-        }), 500
-
-@app.route('/api/config/backup/webdav', methods=['POST'])
-def backup_to_webdav():
-    """备份配置到WebDAV"""
-    try:
-        data = request.get_json()
-        if not data or 'config' not in data:
-            return jsonify({
-                'success': False,
-                'error': '无效的请求数据'
-            }), 400
-        
-        # 获取WebDAV连接信息
-        webdav_config = data.get('webdav', {})
-        webdav_url = webdav_config.get('url', os.getenv('WEBDAV_URL', ''))
-        webdav_username = webdav_config.get('username', os.getenv('WEBDAV_USERNAME', ''))
-        webdav_password = webdav_config.get('password', os.getenv('WEBDAV_PASSWORD', ''))
-        
-        if not all([webdav_url, webdav_username, webdav_password]):
-            return jsonify({
-                'success': False,
-                'error': 'WebDAV连接信息不完整'
-            }), 400
-        
-        # 导入WebDAV备份管理器
-        from utils.webdav_backup import get_webdav_manager
-        manager = get_webdav_manager(webdav_url, webdav_username, webdav_password)
-        
-        # 保存配置
-        filename = data.get('filename', None)
-        success, message = manager.save_config_to_webdav(data['config'], filename)
-        
-        return jsonify({
-            'success': success,
-            'message': message
-        })
-    except Exception as e:
-        print(f"WebDAV备份失败: {e}")
-        return jsonify({
-            'success': False,
-            'error': 'WebDAV备份失败：发生意外错误'
-        }), 500
-
-@app.route('/api/config/restore/webdav', methods=['POST'])
-def restore_from_webdav():
-    """从WebDAV恢复配置"""
-    try:
-        data = request.get_json()
-        if not data or 'filename' not in data:
-            return jsonify({
-                'success': False,
-                'error': '缺少文件名'
-            }), 400
-        
-        # 获取WebDAV连接信息
-        webdav_config = data.get('webdav', {})
-        webdav_url = webdav_config.get('url', os.getenv('WEBDAV_URL', ''))
-        webdav_username = webdav_config.get('username', os.getenv('WEBDAV_USERNAME', ''))
-        webdav_password = webdav_config.get('password', os.getenv('WEBDAV_PASSWORD', ''))
-        
-        if not all([webdav_url, webdav_username, webdav_password]):
-            return jsonify({
-                'success': False,
-                'error': 'WebDAV连接信息不完整'
-            }), 400
-        
-        # 导入WebDAV备份管理器
-        from utils.webdav_backup import get_webdav_manager
-        manager = get_webdav_manager(webdav_url, webdav_username, webdav_password)
-        
-        # 加载配置
-        success, config_data, message = manager.load_config_from_webdav(data['filename'])
-        
-        return jsonify({
-            'success': success,
-            'config': config_data if success else {},
-            'message': message
-        })
-    except Exception as e:
-        print(f"WebDAV恢复失败: {e}")
-        return jsonify({
-            'success': False,
-            'error': 'WebDAV恢复失败：发生意外错误'
-        }), 500
-
-@app.route('/api/config/list/webdav', methods=['POST'])
-def list_webdav_backups():
-    """列出WebDAV备份文件"""
-    try:
-        data = request.get_json()
-        
-        # 获取WebDAV连接信息
-        webdav_config = data.get('webdav', {})
-        webdav_url = webdav_config.get('url', os.getenv('WEBDAV_URL', ''))
-        webdav_username = webdav_config.get('username', os.getenv('WEBDAV_USERNAME', ''))
-        webdav_password = webdav_config.get('password', os.getenv('WEBDAV_PASSWORD', ''))
-        
-        if not all([webdav_url, webdav_username, webdav_password]):
-            return jsonify({
-                'success': False,
-                'error': 'WebDAV连接信息不完整'
-            }), 400
-        
-        # 导入WebDAV备份管理器
-        from utils.webdav_backup import get_webdav_manager
-        manager = get_webdav_manager(webdav_url, webdav_username, webdav_password)
-        
-        # 列出备份
-        success, file_list, message = manager.list_backups()
-        
-        return jsonify({
-            'success': success,
-            'files': file_list if success else [],
-            'message': message
-        })
-    except Exception as e:
-        print(f"WebDAV列表失败: {e}")
-        return jsonify({
-            'success': False,
-            'error': 'WebDAV列表失败：发生意外错误'
-        }), 500
-
 @socketio.on('connect')
 def handle_connect():
     """客户端连接"""
@@ -1099,33 +892,18 @@ if __name__ == '__main__':
     
     # 初始化ReportEngine
     if REPORT_ENGINE_AVAILABLE:
-        report_api_key = os.getenv('REPORT_ENGINE_API_KEY')
-        report_model = os.getenv('REPORT_ENGINE_MODEL_NAME')
-        if report_api_key and report_model:
-            print("初始化ReportEngine...")
-            if initialize_report_engine():
-                print("ReportEngine初始化成功")
-                print("ReportEngine文件基准已建立，开始监控文件变化")
-            else:
-                print("ReportEngine初始化失败，将在配置完整后再次尝试。")
+        print("初始化ReportEngine...")
+        if initialize_report_engine():
+            print("ReportEngine初始化成功")
+            print("ReportEngine文件基准已建立，开始监控文件变化")
         else:
-            print("ReportEngine: 未检测到 LLM 配置信息，已跳过初始化。配置完成后会自动启用。")
+            print("ReportEngine初始化失败")
     
     print("启动Flask服务器...")
-    print("注意：当前使用开发服务器，生产环境建议使用 gunicorn:")
-    print("  gunicorn -k eventlet -w 1 --bind 0.0.0.0:5000 app:app")
     
     try:
         # 启动Flask应用
-        # 抑制Werkzeug生产环境警告
-        import warnings
-        warnings.filterwarnings('ignore', message='.*Werkzeug.*production.*')
-        
-        # 启动服务器
-        # 注意：Flask 2.3+ 和 Flask-SocketIO 5.3+ 推荐使用生产WSGI服务器
-        # 这里使用开发服务器，仅供测试和开发使用
-        socketio.run(app, host='0.0.0.0', port=5000, debug=False, 
-                     allow_unsafe_werkzeug=True)
+        socketio.run(app, host='0.0.0.0', port=5000, debug=False)
     except KeyboardInterrupt:
         print("\n正在关闭应用...")
         cleanup_processes()

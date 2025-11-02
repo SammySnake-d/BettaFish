@@ -243,12 +243,6 @@ class ForumHost:
 # 创建全局实例
 _host_instance = None
 
-def reset_forum_host():
-    """重置论坛主持人实例，下次调用时将使用最新配置重新初始化。"""
-    global _host_instance
-    _host_instance = None
-
-
 def get_forum_host() -> ForumHost:
     """获取全局论坛主持人实例"""
     global _host_instance
