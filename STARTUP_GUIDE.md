@@ -24,8 +24,8 @@
 ### 2. Werkzeug 生产环境警告 ✅
 
 **修复内容**：
-- ✅ 添加了 `allow_unsafe_werkzeug=True` 参数抑制警告
-- ✅ 设置环境变量 `WERKZEUG_RUN_MAIN=true`
+- ✅ 添加了 `warnings.filterwarnings` 抑制警告提示
+- ✅ 显式传递 `allow_unsafe_werkzeug=True` 允许在开发服务器下运行
 - ✅ 在代码中添加了生产部署建议
 
 **生产环境建议**：

@@ -1069,15 +1069,20 @@ if __name__ == '__main__':
             print("ReportEngine: 未检测到 LLM 配置信息，已跳过初始化。配置完成后会自动启用。")
     
     print("启动Flask服务器...")
-    
-    # 设置环境变量以抑制Werkzeug生产环境警告
-    os.environ['WERKZEUG_RUN_MAIN'] = 'true'
+    print("注意：当前使用开发服务器，生产环境建议使用 gunicorn:")
+    print("  gunicorn -k eventlet -w 1 --bind 0.0.0.0:5000 app:app")
     
     try:
         # 启动Flask应用
-        # 注意：对于生产环境，建议使用 gunicorn 或其他 WSGI 服务器
-        # 例如：gunicorn -k eventlet -w 1 --bind 0.0.0.0:5000 app:app
-        socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
+        # 抑制Werkzeug生产环境警告
+        import warnings
+        warnings.filterwarnings('ignore', message='.*Werkzeug.*production.*')
+        
+        # 启动服务器
+        # 注意：Flask 2.3+ 和 Flask-SocketIO 5.3+ 推荐使用生产WSGI服务器
+        # 这里使用开发服务器，仅供测试和开发使用
+        socketio.run(app, host='0.0.0.0', port=5000, debug=False, 
+                     allow_unsafe_werkzeug=True)
     except KeyboardInterrupt:
         print("\n正在关闭应用...")
         cleanup_processes()
