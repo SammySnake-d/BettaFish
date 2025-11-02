@@ -1054,6 +1054,19 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="config-section">
+                        <h3>MindSpider 爬虫配置</h3>
+                        <div class="config-group">
+                            <h4>DeepSeek API</h4>
+                            <div class="config-field">
+                                <label for="mindspiderDeepseekApiKey">DeepSeek API Key</label>
+                                <input type="text" id="mindspiderDeepseekApiKey" name="mindspider_deepseek_api_key" placeholder="例如：sk-deepseek-xxxxxxxx">
+                                <div class="config-info">用于 MindSpider 爬虫的高级话题挖掘与关键词生成。如果留空，将自动沿用 Query Engine 的 DeepSeek 配置。</div>
+                            </div>
+                        </div>
+                        <p class="config-info">MindSpider 爬虫使用与主系统相同的数据库配置。数据库连接信息请在 config.py 或环境变量中配置。</p>
+                    </div>
                 </div>
 
                 <div class="config-modal-footer">
@@ -2754,6 +2767,11 @@
                         document.getElementById('bochaApiKey').value = storedConfig.search_tools.bocha_api_key;
                     }
                 }
+
+                // 加载MindSpider配置
+                if (storedConfig.mindspider && storedConfig.mindspider.deepseek_api_key) {
+                    document.getElementById('mindspiderDeepseekApiKey').value = storedConfig.mindspider.deepseek_api_key;
+                }
             } else {
                 // 没有存储配置时，填充默认推荐值
                 for (const [engineKey, engineInfo] of Object.entries(engineConfigs)) {
@@ -2761,6 +2779,12 @@
                     const modelNameInput = document.getElementById(`${engineKey}_model_name`);
                     if (baseUrlInput) baseUrlInput.value = engineInfo.defaultConfig.base_url;
                     if (modelNameInput) modelNameInput.value = engineInfo.defaultConfig.model_name;
+                }
+
+                // MindSpider 默认不填写（将自动继承 Query Engine 配置）
+                const mindspiderInput = document.getElementById('mindspiderDeepseekApiKey');
+                if (mindspiderInput) {
+                    mindspiderInput.value = '';
                 }
             }
         }
@@ -2773,6 +2797,10 @@
                     const modelNameInput = document.getElementById(`${engineKey}_model_name`);
                     if (baseUrlInput) baseUrlInput.value = engineInfo.defaultConfig.base_url;
                     if (modelNameInput) modelNameInput.value = engineInfo.defaultConfig.model_name;
+                }
+                const mindspiderInput = document.getElementById('mindspiderDeepseekApiKey');
+                if (mindspiderInput) {
+                    mindspiderInput.value = '';
                 }
                 showMessage('已恢复推荐配置', 'success');
             }
@@ -2788,7 +2816,8 @@
             // 收集配置数据
             const configData = {
                 engines: {},
-                search_tools: {}
+                search_tools: {},
+                mindspider: {}
             };
             
             // 收集引擎配置
@@ -2807,6 +2836,9 @@
             // 收集搜索工具配置
             configData.search_tools.tavily_api_key = document.getElementById('tavilyApiKey').value.trim();
             configData.search_tools.bocha_api_key = document.getElementById('bochaApiKey').value.trim();
+
+            // 收集MindSpider配置
+            configData.mindspider.deepseek_api_key = document.getElementById('mindspiderDeepseekApiKey').value.trim();
             
             // 保存到 localStorage
             if (saveConfigToStorage(configData)) {

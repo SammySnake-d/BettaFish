@@ -700,6 +700,11 @@ def get_config():
             'search_tools': {
                 'tavily_api_key_configured': bool(os.getenv('TAVILY_API_KEY')),
                 'bocha_api_key_configured': bool(os.getenv('BOCHA_WEB_SEARCH_API_KEY'))
+            },
+            'mindspider': {
+                'deepseek_api_key_configured': bool(os.getenv('DEEPSEEK_API_KEY')),
+                'database_host': os.getenv('DB_HOST', ''),
+                'database_name': os.getenv('DB_NAME', '')
             }
         }
         return jsonify({
@@ -751,6 +756,11 @@ def save_config():
         if 'bocha_api_key' in search_tools and search_tools['bocha_api_key']:
             os.environ['BOCHA_WEB_SEARCH_API_KEY'] = search_tools['bocha_api_key']
         
+        # 更新MindSpider配置
+        mindspider = data.get('mindspider', {})
+        if 'deepseek_api_key' in mindspider and mindspider['deepseek_api_key']:
+            os.environ['DEEPSEEK_API_KEY'] = mindspider['deepseek_api_key']
+        
         component_updates = []
         
         # 重新初始化 ReportEngine 以应用最新配置
@@ -770,6 +780,9 @@ def save_config():
             component_updates.append('ForumHost 已刷新配置')
         except Exception as forum_error:
             component_updates.append(f'ForumHost 配置更新失败: {forum_error}')
+        
+        if mindspider.get('deepseek_api_key'):
+            component_updates.append('MindSpider DeepSeek API 已更新')
         
         return jsonify({
             'success': True,
