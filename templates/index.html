@@ -1460,50 +1460,7 @@
             report: 'Report Agent - 最终报告生成'
         };
 
-        // 初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeSocket();
-            initializeEventListeners();
-            updateTime();
-            setInterval(updateTime, 1000);
-            checkStatus();
-            setInterval(checkStatus, 5000);
-            
-            // 初始化Report Engine锁定状态检查
-            checkReportLockStatus();
-            reportLockCheckInterval = setInterval(checkReportLockStatus, 10000); // 每10秒检查一次
-            
-            // 定期刷新控制台输出
-            setInterval(() => {
-                refreshConsoleOutput();
-            }, 1000);
-            
-            // 定期刷新论坛对话（实时更新）
-            setInterval(() => {
-                refreshForumMessages();
-            }, 2000);
-            
-            // 初始化论坛相关功能
-            initializeForum();
-            
-            // 延迟预加载iframe以确保应用启动完成
-            setTimeout(() => {
-                preloadIframes();
-            }, 3000);
-        });
-
-        // Socket.IO连接
-
-
-        // 页面头部显示的完整Agent介绍
-        const agentTitles = {
-            insight: 'Insight Agent - 私有数据库挖掘',
-            media: 'Media Agent - 多模态内容分析', 
-            query: 'Query Agent - 精准信息搜索',
-            forum: 'Forum Engine - 多智能体交流',
-            report: 'Report Agent - 最终报告生成'
-        };
-
+        // 构建Agent URL的辅助函数
         const agentProtocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
         const agentHostname = window.location.hostname || '127.0.0.1';
 
