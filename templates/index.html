@@ -1149,6 +1149,53 @@
                     </div>
 
                     <div class="config-section">
+                        <h3>数据库配置 🗄️</h3>
+                        <p class="config-info">配置 MySQL 数据库用于 Insight Engine 和 MindSpider 爬虫。如果不使用这两个功能，可以跳过此配置。</p>
+                        <div class="config-group">
+                            <div class="config-field">
+                                <label for="dbHost">数据库主机</label>
+                                <input type="text" id="dbHost" placeholder="例如：localhost 或 127.0.0.1">
+                                <div class="config-info">MySQL 数据库服务器地址</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="dbPort">数据库端口</label>
+                                <input type="number" id="dbPort" value="3306" min="1" max="65535">
+                                <div class="config-info">MySQL 数据库端口，通常为 3306</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="dbUser">数据库用户名</label>
+                                <input type="text" id="dbUser" placeholder="例如：weiyu_user">
+                            </div>
+                            <div class="config-field">
+                                <label for="dbPassword">数据库密码</label>
+                                <input type="password" id="dbPassword" placeholder="数据库密码">
+                            </div>
+                            <div class="config-field">
+                                <label for="dbName">数据库名称</label>
+                                <input type="text" id="dbName" placeholder="例如：weiyu_db">
+                                <div class="config-info">用于存储爬取数据和舆情分析结果的数据库</div>
+                            </div>
+                            <div class="config-field">
+                                <label for="dbCharset">字符集</label>
+                                <select id="dbCharset">
+                                    <option value="utf8mb4">utf8mb4（推荐）</option>
+                                    <option value="utf8">utf8</option>
+                                    <option value="latin1">latin1</option>
+                                </select>
+                                <div class="config-info">推荐使用 utf8mb4 以支持 Emoji 等特殊字符</div>
+                            </div>
+                        </div>
+                        <div class="config-info" style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 4px;">
+                            <strong>💡 提示：</strong>
+                            <ul style="margin: 5px 0 0 20px;">
+                                <li>数据库配置会保存在浏览器本地</li>
+                                <li>如果你没有 MySQL，可以安装 <a href="https://www.apachefriends.org/" target="_blank">XAMPP</a> 或 <a href="https://www.wampserver.com/" target="_blank">WAMP</a></li>
+                                <li>也可以使用云数据库服务（如阿里云RDS、腾讯云等）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="config-section">
                         <h3>WebDAV 备份配置 ☁️</h3>
                         <p class="config-info">配置WebDAV服务器，可以将配置自动备份到云端（如：坚果云、Nextcloud等）。</p>
                         <div class="config-group">
@@ -2879,6 +2926,16 @@
                     document.getElementById('mindspiderDeepseekApiKey').value = storedConfig.mindspider.deepseek_api_key;
                 }
 
+                // 加载数据库配置
+                if (storedConfig.database) {
+                    if (storedConfig.database.host !== undefined) document.getElementById('dbHost').value = storedConfig.database.host;
+                    if (storedConfig.database.port !== undefined) document.getElementById('dbPort').value = storedConfig.database.port || '';
+                    if (storedConfig.database.user !== undefined) document.getElementById('dbUser').value = storedConfig.database.user;
+                    if (storedConfig.database.password !== undefined) document.getElementById('dbPassword').value = storedConfig.database.password;
+                    if (storedConfig.database.name !== undefined) document.getElementById('dbName').value = storedConfig.database.name;
+                    if (storedConfig.database.charset) document.getElementById('dbCharset').value = storedConfig.database.charset;
+                }
+
                 // 加载高级配置
                 if (storedConfig.advanced) {
                     if (storedConfig.advanced.query) {
@@ -2925,6 +2982,14 @@
                 if (mindspiderInput) {
                     mindspiderInput.value = '';
                 }
+
+                // 数据库默认推荐值
+                document.getElementById('dbHost').value = 'localhost';
+                document.getElementById('dbPort').value = '3306';
+                document.getElementById('dbUser').value = '';
+                document.getElementById('dbPassword').value = '';
+                document.getElementById('dbName').value = '';
+                document.getElementById('dbCharset').value = 'utf8mb4';
             }
         }
         
@@ -2941,6 +3006,14 @@
                 if (mindspiderInput) {
                     mindspiderInput.value = '';
                 }
+
+                // 恢复数据库默认值
+                document.getElementById('dbHost').value = 'localhost';
+                document.getElementById('dbPort').value = '3306';
+                document.getElementById('dbUser').value = '';
+                document.getElementById('dbPassword').value = '';
+                document.getElementById('dbName').value = '';
+                document.getElementById('dbCharset').value = 'utf8mb4';
 
                 // 恢复高级配置默认值
                 document.getElementById('queryMaxReflections').value = 2;
@@ -2979,6 +3052,7 @@
                 engines: {},
                 search_tools: {},
                 mindspider: {},
+                database: {},
                 advanced: {
                     query: {},
                     media: {},
@@ -3007,6 +3081,14 @@
 
             // 收集MindSpider配置
             configData.mindspider.deepseek_api_key = document.getElementById('mindspiderDeepseekApiKey').value.trim();
+
+            // 收集数据库配置
+            configData.database.host = document.getElementById('dbHost').value.trim();
+            configData.database.port = document.getElementById('dbPort').value.trim();
+            configData.database.user = document.getElementById('dbUser').value.trim();
+            configData.database.password = document.getElementById('dbPassword').value;
+            configData.database.name = document.getElementById('dbName').value.trim();
+            configData.database.charset = document.getElementById('dbCharset').value;
 
             // 收集高级配置
             configData.advanced.query.max_reflections = parseInt(document.getElementById('queryMaxReflections').value) || 2;

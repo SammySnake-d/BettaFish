@@ -706,6 +706,13 @@ def get_config():
                 'database_host': os.getenv('DB_HOST', ''),
                 'database_name': os.getenv('DB_NAME', '')
             },
+            'database': {
+                'host': os.getenv('DB_HOST', ''),
+                'port': os.getenv('DB_PORT', ''),
+                'user': os.getenv('DB_USER', ''),
+                'name': os.getenv('DB_NAME', ''),
+                'charset': os.getenv('DB_CHARSET', 'utf8mb4')
+            },
             'advanced': {
                 'query': {
                     'max_reflections': int(os.getenv('QUERY_MAX_REFLECTIONS', 2)),
@@ -798,6 +805,39 @@ def save_config():
         if 'deepseek_api_key' in mindspider and mindspider['deepseek_api_key']:
             os.environ['DEEPSEEK_API_KEY'] = mindspider['deepseek_api_key']
         
+        # 更新数据库配置
+        database = data.get('database', {})
+        if database:
+            if 'host' in database and database['host']:
+                os.environ['DB_HOST'] = database['host']
+            if 'port' in database and database['port']:
+                os.environ['DB_PORT'] = str(database['port'])
+            if 'user' in database and database['user']:
+                os.environ['DB_USER'] = database['user']
+            if 'password' in database and database['password']:
+                os.environ['DB_PASSWORD'] = database['password']
+            if 'name' in database and database['name']:
+                os.environ['DB_NAME'] = database['name']
+            if 'charset' in database and database['charset']:
+                os.environ['DB_CHARSET'] = database['charset']
+
+            try:
+                import config as global_config
+                if 'DB_HOST' in os.environ:
+                    global_config.DB_HOST = os.environ['DB_HOST']
+                if 'DB_PORT' in os.environ:
+                    global_config.DB_PORT = int(os.environ['DB_PORT']) if os.environ['DB_PORT'] else global_config.DB_PORT
+                if 'DB_USER' in os.environ:
+                    global_config.DB_USER = os.environ['DB_USER']
+                if 'DB_PASSWORD' in os.environ:
+                    global_config.DB_PASSWORD = os.environ['DB_PASSWORD']
+                if 'DB_NAME' in os.environ:
+                    global_config.DB_NAME = os.environ['DB_NAME']
+                if 'DB_CHARSET' in os.environ:
+                    global_config.DB_CHARSET = os.environ['DB_CHARSET']
+            except ImportError:
+                pass
+        
         # 更新高级配置
         advanced = data.get('advanced', {})
         if advanced:
@@ -873,6 +913,9 @@ def save_config():
         
         if mindspider.get('deepseek_api_key'):
             component_updates.append('MindSpider DeepSeek API 已更新')
+        
+        if database:
+            component_updates.append('数据库配置已更新（Insight Engine 和 MindSpider 将使用新配置）')
         
         return jsonify({
             'success': True,
