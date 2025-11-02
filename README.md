@@ -247,12 +247,12 @@ INSIGHT_ENGINE_MODEL_NAME = "kimi-k2-0711-preview"
 
 #### 4.2 数据库初始化
 
-自 v1.0.0 起，系统在启动时会自动检查并初始化数据库表结构，只要在 `config.py` 中填写正确的 `DB_*` 配置信息即可。无需手动执行初始化脚本也能正常运行。
+**选择1：使用本地数据库**
 
-> 如果需要手动初始化（例如在服务器预先建库），仍然可以执行以下命令：
+> MindSpider爬虫系统与舆情系统共用项目根目录的数据库配置，无需在 `MindSpider/config.py` 中重复设置。
 
 ```bash
-# 本地MySQL数据库初始化（可选）
+# 本地MySQL数据库初始化
 cd MindSpider
 python schema/init_database.py
 ```

@@ -56,3 +56,8 @@ TAVILY_API_KEY = "your_api_key"
 
 # Bocha API（申请地址：https://open.bochaai.com/）
 BOCHA_WEB_SEARCH_API_KEY = "your_api_key"
+
+
+# ============================== MindSpider爬虫配置 ==============================
+# DeepSeek API密钥（用于话题提取，申请地址：https://www.deepseek.com/）
+DEEPSEEK_API_KEY = "your_api_key"
