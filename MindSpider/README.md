@@ -236,10 +236,10 @@ playwright install
 
 ### 4. 配置系统
 
-编辑 `config.py` 文件，设置数据库和API配置：
+编辑项目根目录下的 `config.py` 文件，设置数据库和API配置：
 
 ```python
-# MySQL数据库配置
+# MySQL数据库配置（MindSpider与舆情系统共用）
 DB_HOST = "your_database_host"
 DB_PORT = 3306
 DB_USER = "your_username"
@@ -247,9 +247,12 @@ DB_PASSWORD = "your_password"
 DB_NAME = "mindspider"
 DB_CHARSET = "utf8mb4"
 
-# DeepSeek API密钥
+# DeepSeek API密钥（用于MindSpider话题提取）
 DEEPSEEK_API_KEY = "your_deepseek_api_key"
 ```
+
+> [!note]
+> `MindSpider/config.py` 会自动导入项目根目录的数据库配置，因此只需在一个地方维护数据库连接信息。
 
 ### 5. 初始化系统
 
