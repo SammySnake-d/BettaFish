@@ -81,8 +81,8 @@ class Config:
                     "BOCHA_API_KEY",
                 ),
                 search_timeout=int(_get_value(config_module, "SEARCH_TIMEOUT", 240)),
-                max_content_length=int(_get_value(config_module, "SEARCH_CONTENT_MAX_LENGTH", 20000)),
-                max_reflections=int(_get_value(config_module, "MAX_REFLECTIONS", 2)),
+                max_content_length=int(_get_value(config_module, "MEDIA_ENGINE_MAX_CONTENT_LENGTH", "SEARCH_CONTENT_MAX_LENGTH", 20000)),
+                max_reflections=int(_get_value(config_module, "MEDIA_ENGINE_MAX_REFLECTIONS", "MAX_REFLECTIONS", 2)),
                 max_paragraphs=int(_get_value(config_module, "MAX_PARAGRAPHS", 5)),
                 output_dir=_get_value(config_module, "OUTPUT_DIR", "reports"),
                 save_intermediate_states=str(
@@ -111,8 +111,8 @@ class Config:
                 "BOCHA_API_KEY",
             ),
             search_timeout=int(_get_value(config_dict, "SEARCH_TIMEOUT", 240)),
-            max_content_length=int(_get_value(config_dict, "SEARCH_CONTENT_MAX_LENGTH", 20000)),
-            max_reflections=int(_get_value(config_dict, "MAX_REFLECTIONS", 2)),
+            max_content_length=int(_get_value(config_dict, "MEDIA_ENGINE_MAX_CONTENT_LENGTH", "SEARCH_CONTENT_MAX_LENGTH", 20000)),
+            max_reflections=int(_get_value(config_dict, "MEDIA_ENGINE_MAX_REFLECTIONS", "MAX_REFLECTIONS", 2)),
             max_paragraphs=int(_get_value(config_dict, "MAX_PARAGRAPHS", 5)),
             output_dir=_get_value(config_dict, "OUTPUT_DIR", "reports"),
             save_intermediate_states=str(
