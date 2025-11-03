@@ -1335,6 +1335,7 @@
                     <div class="config-subtabs">
                         <button class="config-subtab active" data-subpanel="database">数据库配置</button>
                         <button class="config-subtab" data-subpanel="crawler-settings">爬虫设置</button>
+                        <button class="config-subtab" data-subpanel="webdav">WebDAV备份</button>
                     </div>
                     <div class="config-subpanels">
                         <!-- 数据库配置 -->
@@ -1366,17 +1367,45 @@
                                 </div>
                             </div>
                             <div class="config-note" style="margin-top: 16px;">
-                                配置 MySQL 数据库连接信息，用于存储爬取的社交媒体数据。<br>
+                                配置 MySQL 数据库连接信息，用于存储爬取的社交媒体数据和舆情分析数据（统一数据库）。<br>
                                 云数据库服务：可免费申请使用，联系邮箱 670939375@qq.com
                             </div>
                         </div>
 
                         <!-- 爬虫设置 -->
                         <div class="config-subpanel" id="subpanel-crawler-settings">
-                            <div class="config-placeholder">
-                                <strong>爬虫高级配置</strong><br>
-                                此部分功能正在开发中，敬请期待。<br>
-                                将支持自定义爬虫规则、频率控制、代理设置等功能。
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>DeepSeek API Key</label>
+                                    <input type="text" id="crawler_deepseek_api_key" placeholder="用于话题提取的DeepSeek API Key">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                配置爬虫相关参数。DeepSeek API 用于话题提取功能。<br>
+                                申请地址: <a href="https://www.deepseek.com/" target="_blank">https://www.deepseek.com/</a>
+                            </div>
+                        </div>
+
+                        <!-- WebDAV备份 -->
+                        <div class="config-subpanel" id="subpanel-webdav">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>WebDAV URL</label>
+                                    <input type="text" id="webdav_url" placeholder="https://dav.jianguoyun.com/dav/">
+                                </div>
+                                <div class="config-field">
+                                    <label>用户名</label>
+                                    <input type="text" id="webdav_username" placeholder="WebDAV用户名">
+                                </div>
+                                <div class="config-field">
+                                    <label>密码</label>
+                                    <input type="password" id="webdav_password" placeholder="WebDAV密码">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                配置 WebDAV 服务器信息，用于备份和恢复配置文件。<br>
+                                推荐服务商：<a href="https://www.jianguoyun.com/" target="_blank">坚果云</a>、<a href="https://www.nutstore.net/" target="_blank">nut store</a> 等支持WebDAV的网盘服务。<br>
+                                注意：URL 必须使用 HTTPS 协议。
                             </div>
                         </div>
                     </div>
@@ -1384,10 +1413,88 @@
 
                 <!-- 高级配置面板 -->
                 <div class="config-panel" id="panel-advanced">
-                    <div class="config-placeholder">
-                        <strong>高级系统配置</strong><br>
-                        此部分功能正在开发中，敬请期待。<br>
-                        将支持日志级别、缓存设置、性能优化等高级参数配置。
+                    <div class="config-subtabs">
+                        <button class="config-subtab active" data-subpanel="query-advanced">Query Engine</button>
+                        <button class="config-subtab" data-subpanel="media-advanced">Media Engine</button>
+                        <button class="config-subtab" data-subpanel="insight-advanced">Insight Engine</button>
+                    </div>
+                    <div class="config-subpanels">
+                        <!-- Query Engine 高级配置 -->
+                        <div class="config-subpanel active" id="subpanel-query-advanced">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>反思轮次 (Max Reflections)</label>
+                                    <input type="number" id="query_max_reflections" placeholder="2" min="0" max="10">
+                                </div>
+                                <div class="config-field">
+                                    <label>最大搜索结果数 (Max Search Results)</label>
+                                    <input type="number" id="query_max_search_results" placeholder="20" min="1" max="100">
+                                </div>
+                                <div class="config-field">
+                                    <label>最大内容长度 (Max Content Length)</label>
+                                    <input type="number" id="query_max_content_length" placeholder="20000" min="1000" max="100000">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                <strong>Query Engine 高级参数说明：</strong><br>
+                                • 反思轮次：控制 LLM 对搜索结果的反思和优化次数，越多质量越高但耗时越长<br>
+                                • 最大搜索结果数：每次搜索返回的最大结果数量<br>
+                                • 最大内容长度：单个内容的最大字符数，超过会被截断
+                            </div>
+                        </div>
+
+                        <!-- Media Engine 高级配置 -->
+                        <div class="config-subpanel" id="subpanel-media-advanced">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>反思轮次 (Max Reflections)</label>
+                                    <input type="number" id="media_max_reflections" placeholder="2" min="0" max="10">
+                                </div>
+                                <div class="config-field">
+                                    <label>最大内容长度 (Max Content Length)</label>
+                                    <input type="number" id="media_max_content_length" placeholder="20000" min="1000" max="100000">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                <strong>Media Engine 高级参数说明：</strong><br>
+                                • 反思轮次：控制多模态内容分析的迭代次数<br>
+                                • 最大内容长度：单个多模态内容的最大字符数
+                            </div>
+                        </div>
+
+                        <!-- Insight Engine 高级配置 -->
+                        <div class="config-subpanel" id="subpanel-insight-advanced">
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>反思轮次 (Max Reflections)</label>
+                                    <input type="number" id="insight_max_reflections" placeholder="3" min="0" max="10">
+                                </div>
+                                <div class="config-field">
+                                    <label>最大内容长度 (Max Content Length)</label>
+                                    <input type="number" id="insight_max_content_length" placeholder="500000" min="1000" max="1000000">
+                                </div>
+                                <div class="config-field">
+                                    <label>全局搜索限制 (Search Globally Limit)</label>
+                                    <input type="number" id="insight_search_globally_limit" placeholder="50" min="1" max="500">
+                                </div>
+                                <div class="config-field">
+                                    <label>评论获取限制 (Get Comments Limit)</label>
+                                    <input type="number" id="insight_get_comments_limit" placeholder="500" min="1" max="2000">
+                                </div>
+                                <div class="config-field">
+                                    <label>传给LLM的最大结果数 (Max Results for LLM)</label>
+                                    <input type="number" id="insight_max_results_for_llm" placeholder="0" min="0" max="200">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                <strong>Insight Engine 高级参数说明：</strong><br>
+                                • 反思轮次：控制舆情数据挖掘的迭代深度<br>
+                                • 最大内容长度：单个内容块的最大字符数<br>
+                                • 全局搜索限制：每个数据表的全局搜索结果数（per table）<br>
+                                • 评论获取限制：单个话题获取的最大评论数<br>
+                                • 传给LLM的最大结果数：0表示不限制
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1400,19 +1507,43 @@
                     <div class="config-subpanels">
                         <!-- 模型配置 -->
                         <div class="config-subpanel active" id="subpanel-sentiment-models">
-                            <div class="config-placeholder">
-                                <strong>情感分析模型配置</strong><br>
-                                此部分功能正在开发中，敬请期待。<br>
-                                将支持多种情感分析模型选择和配置。
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>启用情感分析</label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                                        <input type="checkbox" id="sentiment_enabled"> 开启后，Insight Engine 将对文本进行情感分析
+                                    </label>
+                                </div>
+                                <div class="config-field">
+                                    <label>模型类型</label>
+                                    <input type="text" id="sentiment_model_type" placeholder="multilingual">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                选择情感分析模型类型。默认使用多语言模型，可根据需求切换为 bert、qwen 等自定义模型。
                             </div>
                         </div>
 
                         <!-- 分析设置 -->
                         <div class="config-subpanel" id="subpanel-sentiment-settings">
-                            <div class="config-placeholder">
-                                <strong>情感分析设置</strong><br>
-                                此部分功能正在开发中，敬请期待。<br>
-                                将支持情感分析阈值、分类标签等参数调整。
+                            <div class="config-form-grid">
+                                <div class="config-field">
+                                    <label>置信度阈值</label>
+                                    <input type="number" id="sentiment_confidence_threshold" placeholder="0.8" step="0.01" min="0" max="1">
+                                </div>
+                                <div class="config-field">
+                                    <label>批处理大小</label>
+                                    <input type="number" id="sentiment_batch_size" placeholder="32" min="1" max="256">
+                                </div>
+                                <div class="config-field">
+                                    <label>最大序列长度</label>
+                                    <input type="number" id="sentiment_max_sequence_length" placeholder="512" min="32" max="2048">
+                                </div>
+                            </div>
+                            <div class="config-note" style="margin-top: 16px;">
+                                • 置信度阈值：低于该阈值的结果将视为不可信<br>
+                                • 批处理大小：批量分析时一次处理的文本数量<br>
+                                • 最大序列长度：输入文本的最大token长度，超过将自动截断
                             </div>
                         </div>
                     </div>
@@ -3068,6 +3199,46 @@
                 document.getElementById('db_name').value = config.database.name || '';
                 document.getElementById('db_charset').value = config.database.charset || 'utf8mb4';
             }
+
+            // WebDAV 配置
+            if (config.webdav) {
+                document.getElementById('webdav_url').value = config.webdav.url || '';
+                document.getElementById('webdav_username').value = config.webdav.username || '';
+                document.getElementById('webdav_password').value = config.webdav.password || '';
+            }
+
+            // 爬虫配置
+            if (config.crawler) {
+                document.getElementById('crawler_deepseek_api_key').value = config.crawler.deepseek_api_key || '';
+            }
+
+            // 高级配置
+            if (config.advanced) {
+                // Query Engine
+                document.getElementById('query_max_reflections').value = config.advanced.query_max_reflections || 2;
+                document.getElementById('query_max_search_results').value = config.advanced.query_max_search_results || 20;
+                document.getElementById('query_max_content_length').value = config.advanced.query_max_content_length || 20000;
+
+                // Media Engine
+                document.getElementById('media_max_reflections').value = config.advanced.media_max_reflections || 2;
+                document.getElementById('media_max_content_length').value = config.advanced.media_max_content_length || 20000;
+
+                // Insight Engine
+                document.getElementById('insight_max_reflections').value = config.advanced.insight_max_reflections || 3;
+                document.getElementById('insight_max_content_length').value = config.advanced.insight_max_content_length || 500000;
+                document.getElementById('insight_search_globally_limit').value = config.advanced.insight_search_globally_limit || 50;
+                document.getElementById('insight_get_comments_limit').value = config.advanced.insight_get_comments_limit || 500;
+                document.getElementById('insight_max_results_for_llm').value = config.advanced.insight_max_results_for_llm || 0;
+            }
+
+            // 情感分析配置
+            if (config.sentiment) {
+                document.getElementById('sentiment_enabled').checked = config.sentiment.enabled !== false;
+                document.getElementById('sentiment_model_type').value = config.sentiment.model_type || 'multilingual';
+                document.getElementById('sentiment_confidence_threshold').value = config.sentiment.confidence_threshold || 0.8;
+                document.getElementById('sentiment_batch_size').value = config.sentiment.batch_size || 32;
+                document.getElementById('sentiment_max_sequence_length').value = config.sentiment.max_sequence_length || 512;
+            }
         }
 
         function saveConfig() {
@@ -3119,6 +3290,33 @@
                     password: document.getElementById('db_password').value,
                     name: document.getElementById('db_name').value,
                     charset: document.getElementById('db_charset').value
+                },
+                crawler: {
+                    deepseek_api_key: document.getElementById('crawler_deepseek_api_key').value
+                },
+                webdav: {
+                    url: document.getElementById('webdav_url').value,
+                    username: document.getElementById('webdav_username').value,
+                    password: document.getElementById('webdav_password').value
+                },
+                advanced: {
+                    query_max_reflections: parseInt(document.getElementById('query_max_reflections').value) || 2,
+                    query_max_search_results: parseInt(document.getElementById('query_max_search_results').value) || 20,
+                    query_max_content_length: parseInt(document.getElementById('query_max_content_length').value) || 20000,
+                    media_max_reflections: parseInt(document.getElementById('media_max_reflections').value) || 2,
+                    media_max_content_length: parseInt(document.getElementById('media_max_content_length').value) || 20000,
+                    insight_max_reflections: parseInt(document.getElementById('insight_max_reflections').value) || 3,
+                    insight_max_content_length: parseInt(document.getElementById('insight_max_content_length').value) || 500000,
+                    insight_search_globally_limit: parseInt(document.getElementById('insight_search_globally_limit').value) || 50,
+                    insight_get_comments_limit: parseInt(document.getElementById('insight_get_comments_limit').value) || 500,
+                    insight_max_results_for_llm: parseInt(document.getElementById('insight_max_results_for_llm').value) || 0
+                },
+                sentiment: {
+                    enabled: document.getElementById('sentiment_enabled').checked,
+                    model_type: document.getElementById('sentiment_model_type').value,
+                    confidence_threshold: parseFloat(document.getElementById('sentiment_confidence_threshold').value) || 0.8,
+                    batch_size: parseInt(document.getElementById('sentiment_batch_size').value) || 32,
+                    max_sequence_length: parseInt(document.getElementById('sentiment_max_sequence_length').value) || 512
                 }
             };
 
