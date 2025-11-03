@@ -25,3 +25,5 @@
 2025-08-27 13:16:30,963 - ReportEngine - INFO - 报告已保存到: final_reports\final_report__20250827_131630.html
 2025-08-27 13:16:30,964 - ReportEngine - INFO - 状态已保存到: final_reports\report_state__20250827_131630.json
 2025-08-27 13:16:30,964 - ReportEngine - INFO - 报告生成完成，耗时: 276.02 秒
+2025-11-02 16:24:35,080 - ReportEngine - INFO - Report Agent已初始化
+2025-11-02 16:24:35,081 - ReportEngine - INFO - 使用LLM: {'provider': 'gemini-2.5-pro', 'model': 'gemini-2.5-pro', 'api_base': 'https://www.chataiapi.com/v1'}

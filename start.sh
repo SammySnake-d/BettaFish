@@ -4,7 +4,7 @@
 
 if [ -d "venv" ]; then
     source venv/bin/activate
-    python app.py
+    gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:5000 --preload wsgi:app
 else
-    python3 app.py
+    python3 -m gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:5000 --preload wsgi:app
 fi
