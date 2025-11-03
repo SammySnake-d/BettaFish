@@ -1150,6 +1150,8 @@
             <div class="config-main-tabs">
                 <button class="config-main-tab active" data-panel="engines">引擎 LLM 配置</button>
                 <button class="config-main-tab" data-panel="tools">检索与工具</button>
+                <button class="config-main-tab" data-panel="database">数据库</button>
+                <button class="config-main-tab" data-panel="backup">备份</button>
                 <button class="config-main-tab" data-panel="crawler">爬虫</button>
                 <button class="config-main-tab" data-panel="advanced">高级配置</button>
                 <button class="config-main-tab" data-panel="sentiment">情感分析</button>
@@ -1330,84 +1332,77 @@
                     </div>
                 </div>
 
+                <!-- 数据库面板 -->
+                <div class="config-panel" id="panel-database">
+                    <div class="config-form-grid">
+                        <div class="config-field">
+                            <label>主机地址</label>
+                            <input type="text" id="db_host" placeholder="localhost">
+                        </div>
+                        <div class="config-field">
+                            <label>端口</label>
+                            <input type="number" id="db_port" placeholder="3306">
+                        </div>
+                        <div class="config-field">
+                            <label>用户名</label>
+                            <input type="text" id="db_user" placeholder="root">
+                        </div>
+                        <div class="config-field">
+                            <label>密码</label>
+                            <input type="password" id="db_password" placeholder="数据库密码">
+                        </div>
+                        <div class="config-field">
+                            <label>数据库名称</label>
+                            <input type="text" id="db_name" placeholder="数据库名称">
+                        </div>
+                        <div class="config-field">
+                            <label>字符集</label>
+                            <input type="text" id="db_charset" placeholder="utf8mb4">
+                        </div>
+                    </div>
+                    <div class="config-note" style="margin-top: 16px;">
+                        配置 MySQL 数据库连接信息，用于存储爬取的社交媒体数据和舆情分析数据。<br>
+                        此数据库配置由 <strong>MindSpider 爬虫</strong>和 <strong>InsightEngine 舆情分析引擎</strong>共同使用。<br>
+                        云数据库服务：可免费申请使用，联系邮箱 670939375@qq.com
+                    </div>
+                </div>
+
+                <!-- 备份面板 -->
+                <div class="config-panel" id="panel-backup">
+                    <div class="config-form-grid">
+                        <div class="config-field">
+                            <label>WebDAV URL</label>
+                            <input type="text" id="webdav_url" placeholder="https://dav.jianguoyun.com/dav/">
+                        </div>
+                        <div class="config-field">
+                            <label>用户名</label>
+                            <input type="text" id="webdav_username" placeholder="WebDAV用户名">
+                        </div>
+                        <div class="config-field">
+                            <label>密码</label>
+                            <input type="password" id="webdav_password" placeholder="WebDAV密码">
+                        </div>
+                    </div>
+                    <div class="config-note" style="margin-top: 16px;">
+                        配置 WebDAV 服务器信息，用于备份和恢复 <strong>所有系统配置</strong>。<br>
+                        备份内容包括：LLM配置、数据库配置、检索工具配置、爬虫配置、高级配置、情感分析配置等。<br>
+                        推荐服务商：<a href="https://www.jianguoyun.com/" target="_blank">坚果云</a>、<a href="https://www.nutstore.net/" target="_blank">nut store</a> 等支持WebDAV的网盘服务。<br>
+                        注意：URL 必须使用 HTTPS 协议。
+                    </div>
+                </div>
+
                 <!-- 爬虫面板 -->
                 <div class="config-panel" id="panel-crawler">
-                    <div class="config-subtabs">
-                        <button class="config-subtab active" data-subpanel="database">数据库配置</button>
-                        <button class="config-subtab" data-subpanel="crawler-settings">爬虫设置</button>
-                        <button class="config-subtab" data-subpanel="webdav">WebDAV备份</button>
+                    <div class="config-form-grid">
+                        <div class="config-field">
+                            <label>DeepSeek API Key</label>
+                            <input type="text" id="crawler_deepseek_api_key" placeholder="用于话题提取的DeepSeek API Key">
+                        </div>
                     </div>
-                    <div class="config-subpanels">
-                        <!-- 数据库配置 -->
-                        <div class="config-subpanel active" id="subpanel-database">
-                            <div class="config-form-grid">
-                                <div class="config-field">
-                                    <label>主机地址</label>
-                                    <input type="text" id="db_host" placeholder="localhost">
-                                </div>
-                                <div class="config-field">
-                                    <label>端口</label>
-                                    <input type="number" id="db_port" placeholder="3306">
-                                </div>
-                                <div class="config-field">
-                                    <label>用户名</label>
-                                    <input type="text" id="db_user" placeholder="root">
-                                </div>
-                                <div class="config-field">
-                                    <label>密码</label>
-                                    <input type="password" id="db_password" placeholder="数据库密码">
-                                </div>
-                                <div class="config-field">
-                                    <label>数据库名称</label>
-                                    <input type="text" id="db_name" placeholder="数据库名称">
-                                </div>
-                                <div class="config-field">
-                                    <label>字符集</label>
-                                    <input type="text" id="db_charset" placeholder="utf8mb4">
-                                </div>
-                            </div>
-                            <div class="config-note" style="margin-top: 16px;">
-                                配置 MySQL 数据库连接信息，用于存储爬取的社交媒体数据和舆情分析数据（统一数据库）。<br>
-                                云数据库服务：可免费申请使用，联系邮箱 670939375@qq.com
-                            </div>
-                        </div>
-
-                        <!-- 爬虫设置 -->
-                        <div class="config-subpanel" id="subpanel-crawler-settings">
-                            <div class="config-form-grid">
-                                <div class="config-field">
-                                    <label>DeepSeek API Key</label>
-                                    <input type="text" id="crawler_deepseek_api_key" placeholder="用于话题提取的DeepSeek API Key">
-                                </div>
-                            </div>
-                            <div class="config-note" style="margin-top: 16px;">
-                                配置爬虫相关参数。DeepSeek API 用于话题提取功能。<br>
-                                申请地址: <a href="https://www.deepseek.com/" target="_blank">https://www.deepseek.com/</a>
-                            </div>
-                        </div>
-
-                        <!-- WebDAV备份 -->
-                        <div class="config-subpanel" id="subpanel-webdav">
-                            <div class="config-form-grid">
-                                <div class="config-field">
-                                    <label>WebDAV URL</label>
-                                    <input type="text" id="webdav_url" placeholder="https://dav.jianguoyun.com/dav/">
-                                </div>
-                                <div class="config-field">
-                                    <label>用户名</label>
-                                    <input type="text" id="webdav_username" placeholder="WebDAV用户名">
-                                </div>
-                                <div class="config-field">
-                                    <label>密码</label>
-                                    <input type="password" id="webdav_password" placeholder="WebDAV密码">
-                                </div>
-                            </div>
-                            <div class="config-note" style="margin-top: 16px;">
-                                配置 WebDAV 服务器信息，用于备份和恢复配置文件。<br>
-                                推荐服务商：<a href="https://www.jianguoyun.com/" target="_blank">坚果云</a>、<a href="https://www.nutstore.net/" target="_blank">nut store</a> 等支持WebDAV的网盘服务。<br>
-                                注意：URL 必须使用 HTTPS 协议。
-                            </div>
-                        </div>
+                    <div class="config-note" style="margin-top: 16px;">
+                        配置 MindSpider 爬虫相关参数。DeepSeek API 用于话题提取功能。<br>
+                        申请地址: <a href="https://www.deepseek.com/" target="_blank">https://www.deepseek.com/</a><br>
+                        <strong>数据库配置</strong>请前往"数据库"标签页进行配置。
                     </div>
                 </div>
 
