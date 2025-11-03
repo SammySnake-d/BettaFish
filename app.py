@@ -633,6 +633,33 @@ def get_config():
         'tools': {
             'tavily_api_key': getattr(config_module, 'TAVILY_API_KEY', ''),
             'bocha_api_key': getattr(config_module, 'BOCHA_WEB_SEARCH_API_KEY', '')
+        },
+        'crawler': {
+            'deepseek_api_key': getattr(config_module, 'DEEPSEEK_API_KEY', '')
+        },
+        'webdav': {
+            'url': getattr(config_module, 'WEBDAV_URL', ''),
+            'username': getattr(config_module, 'WEBDAV_USERNAME', ''),
+            'password': getattr(config_module, 'WEBDAV_PASSWORD', '')
+        },
+        'advanced': {
+            'query_max_reflections': getattr(config_module, 'QUERY_ENGINE_MAX_REFLECTIONS', 2),
+            'query_max_search_results': getattr(config_module, 'QUERY_ENGINE_MAX_SEARCH_RESULTS', 20),
+            'query_max_content_length': getattr(config_module, 'QUERY_ENGINE_MAX_CONTENT_LENGTH', 20000),
+            'media_max_reflections': getattr(config_module, 'MEDIA_ENGINE_MAX_REFLECTIONS', 2),
+            'media_max_content_length': getattr(config_module, 'MEDIA_ENGINE_MAX_CONTENT_LENGTH', 20000),
+            'insight_max_reflections': getattr(config_module, 'INSIGHT_ENGINE_MAX_REFLECTIONS', 3),
+            'insight_max_content_length': getattr(config_module, 'INSIGHT_ENGINE_MAX_CONTENT_LENGTH', 500000),
+            'insight_search_globally_limit': getattr(config_module, 'INSIGHT_ENGINE_DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT', 50),
+            'insight_get_comments_limit': getattr(config_module, 'INSIGHT_ENGINE_DEFAULT_GET_COMMENTS_LIMIT', 500),
+            'insight_max_results_for_llm': getattr(config_module, 'INSIGHT_ENGINE_MAX_SEARCH_RESULTS_FOR_LLM', 0)
+        },
+        'sentiment': {
+            'enabled': getattr(config_module, 'SENTIMENT_ANALYSIS_ENABLED', True),
+            'model_type': getattr(config_module, 'SENTIMENT_MODEL_TYPE', 'multilingual'),
+            'confidence_threshold': getattr(config_module, 'SENTIMENT_CONFIDENCE_THRESHOLD', 0.8),
+            'batch_size': getattr(config_module, 'SENTIMENT_BATCH_SIZE', 32),
+            'max_sequence_length': getattr(config_module, 'SENTIMENT_MAX_SEQUENCE_LENGTH', 512)
         }
     }
 
@@ -687,6 +714,10 @@ def save_config():
         db_conf = config_data.get('database', {})
         engines_conf = config_data.get('engines', {})
         tools_conf = config_data.get('tools', {})
+        crawler_conf = config_data.get('crawler', {})
+        webdav_conf = config_data.get('webdav', {})
+        advanced_conf = config_data.get('advanced', {})
+        sentiment_conf = config_data.get('sentiment', {})
 
         port_value = db_conf.get('port', 3306)
         try:
@@ -746,6 +777,33 @@ def save_config():
             if tools_conf:
                 updated_line = update_line(updated_line, 'TAVILY_API_KEY', tools_conf.get('tavily_api_key', ''))
                 updated_line = update_line(updated_line, 'BOCHA_WEB_SEARCH_API_KEY', tools_conf.get('bocha_api_key', ''))
+
+            if crawler_conf:
+                updated_line = update_line(updated_line, 'DEEPSEEK_API_KEY', crawler_conf.get('deepseek_api_key', ''))
+
+            if webdav_conf:
+                updated_line = update_line(updated_line, 'WEBDAV_URL', webdav_conf.get('url', ''))
+                updated_line = update_line(updated_line, 'WEBDAV_USERNAME', webdav_conf.get('username', ''))
+                updated_line = update_line(updated_line, 'WEBDAV_PASSWORD', webdav_conf.get('password', ''))
+
+            if advanced_conf:
+                updated_line = update_line(updated_line, 'QUERY_ENGINE_MAX_REFLECTIONS', advanced_conf.get('query_max_reflections', 2), is_number=True)
+                updated_line = update_line(updated_line, 'QUERY_ENGINE_MAX_SEARCH_RESULTS', advanced_conf.get('query_max_search_results', 20), is_number=True)
+                updated_line = update_line(updated_line, 'QUERY_ENGINE_MAX_CONTENT_LENGTH', advanced_conf.get('query_max_content_length', 20000), is_number=True)
+                updated_line = update_line(updated_line, 'MEDIA_ENGINE_MAX_REFLECTIONS', advanced_conf.get('media_max_reflections', 2), is_number=True)
+                updated_line = update_line(updated_line, 'MEDIA_ENGINE_MAX_CONTENT_LENGTH', advanced_conf.get('media_max_content_length', 20000), is_number=True)
+                updated_line = update_line(updated_line, 'INSIGHT_ENGINE_MAX_REFLECTIONS', advanced_conf.get('insight_max_reflections', 3), is_number=True)
+                updated_line = update_line(updated_line, 'INSIGHT_ENGINE_MAX_CONTENT_LENGTH', advanced_conf.get('insight_max_content_length', 500000), is_number=True)
+                updated_line = update_line(updated_line, 'INSIGHT_ENGINE_DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT', advanced_conf.get('insight_search_globally_limit', 50), is_number=True)
+                updated_line = update_line(updated_line, 'INSIGHT_ENGINE_DEFAULT_GET_COMMENTS_LIMIT', advanced_conf.get('insight_get_comments_limit', 500), is_number=True)
+                updated_line = update_line(updated_line, 'INSIGHT_ENGINE_MAX_SEARCH_RESULTS_FOR_LLM', advanced_conf.get('insight_max_results_for_llm', 0), is_number=True)
+
+            if sentiment_conf:
+                updated_line = update_line(updated_line, 'SENTIMENT_ANALYSIS_ENABLED', sentiment_conf.get('enabled', True), is_number=True)
+                updated_line = update_line(updated_line, 'SENTIMENT_MODEL_TYPE', sentiment_conf.get('model_type', 'multilingual'))
+                updated_line = update_line(updated_line, 'SENTIMENT_CONFIDENCE_THRESHOLD', sentiment_conf.get('confidence_threshold', 0.8), is_number=True)
+                updated_line = update_line(updated_line, 'SENTIMENT_BATCH_SIZE', sentiment_conf.get('batch_size', 32), is_number=True)
+                updated_line = update_line(updated_line, 'SENTIMENT_MAX_SEQUENCE_LENGTH', sentiment_conf.get('max_sequence_length', 512), is_number=True)
 
             updated_lines.append(updated_line)
 

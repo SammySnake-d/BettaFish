@@ -101,26 +101,26 @@ class Config:
                 db_name=_get_value(config_module, "DB_NAME"),
                 db_port=int(_get_value(config_module, "DB_PORT", 3306)),
                 db_charset=_get_value(config_module, "DB_CHARSET", "utf8mb4"),
-                max_reflections=int(_get_value(config_module, "MAX_REFLECTIONS", 3)),
+                max_reflections=int(_get_value(config_module, "INSIGHT_ENGINE_MAX_REFLECTIONS", "MAX_REFLECTIONS", 3)),
                 max_paragraphs=int(_get_value(config_module, "MAX_PARAGRAPHS", 6)),
                 search_timeout=int(_get_value(config_module, "SEARCH_TIMEOUT", 240)),
-                max_content_length=int(_get_value(config_module, "SEARCH_CONTENT_MAX_LENGTH", 500000)),
+                max_content_length=int(_get_value(config_module, "INSIGHT_ENGINE_MAX_CONTENT_LENGTH", "SEARCH_CONTENT_MAX_LENGTH", 500000)),
                 default_search_hot_content_limit=int(
                     _get_value(config_module, "DEFAULT_SEARCH_HOT_CONTENT_LIMIT", 100)
                 ),
                 default_search_topic_globally_limit_per_table=int(
-                    _get_value(config_module, "DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT_PER_TABLE", 50)
+                    _get_value(config_module, "INSIGHT_ENGINE_DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT", "DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT_PER_TABLE", 50)
                 ),
                 default_search_topic_by_date_limit_per_table=int(
                     _get_value(config_module, "DEFAULT_SEARCH_TOPIC_BY_DATE_LIMIT_PER_TABLE", 100)
                 ),
                 default_get_comments_for_topic_limit=int(
-                    _get_value(config_module, "DEFAULT_GET_COMMENTS_FOR_TOPIC_LIMIT", 500)
+                    _get_value(config_module, "INSIGHT_ENGINE_DEFAULT_GET_COMMENTS_LIMIT", "DEFAULT_GET_COMMENTS_FOR_TOPIC_LIMIT", 500)
                 ),
                 default_search_topic_on_platform_limit=int(
                     _get_value(config_module, "DEFAULT_SEARCH_TOPIC_ON_PLATFORM_LIMIT", 200)
                 ),
-                max_search_results_for_llm=int(_get_value(config_module, "MAX_SEARCH_RESULTS_FOR_LLM", 0)),
+                max_search_results_for_llm=int(_get_value(config_module, "INSIGHT_ENGINE_MAX_SEARCH_RESULTS_FOR_LLM", "MAX_SEARCH_RESULTS_FOR_LLM", 0)),
                 max_high_confidence_sentiment_results=int(
                     _get_value(config_module, "MAX_HIGH_CONFIDENCE_SENTIMENT_RESULTS", 0)
                 ),
@@ -151,26 +151,26 @@ class Config:
             db_name=_get_value(config_dict, "DB_NAME"),
             db_port=int(_get_value(config_dict, "DB_PORT", 3306)),
             db_charset=_get_value(config_dict, "DB_CHARSET", "utf8mb4"),
-            max_reflections=int(_get_value(config_dict, "MAX_REFLECTIONS", 3)),
+            max_reflections=int(_get_value(config_dict, "INSIGHT_ENGINE_MAX_REFLECTIONS", "MAX_REFLECTIONS", 3)),
             max_paragraphs=int(_get_value(config_dict, "MAX_PARAGRAPHS", 6)),
             search_timeout=int(_get_value(config_dict, "SEARCH_TIMEOUT", 240)),
-            max_content_length=int(_get_value(config_dict, "SEARCH_CONTENT_MAX_LENGTH", 500000)),
+            max_content_length=int(_get_value(config_dict, "INSIGHT_ENGINE_MAX_CONTENT_LENGTH", "SEARCH_CONTENT_MAX_LENGTH", 500000)),
             default_search_hot_content_limit=int(
                 _get_value(config_dict, "DEFAULT_SEARCH_HOT_CONTENT_LIMIT", 100)
             ),
             default_search_topic_globally_limit_per_table=int(
-                _get_value(config_dict, "DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT_PER_TABLE", 50)
+                _get_value(config_dict, "INSIGHT_ENGINE_DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT", "DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT_PER_TABLE", 50)
             ),
             default_search_topic_by_date_limit_per_table=int(
                 _get_value(config_dict, "DEFAULT_SEARCH_TOPIC_BY_DATE_LIMIT_PER_TABLE", 100)
             ),
             default_get_comments_for_topic_limit=int(
-                _get_value(config_dict, "DEFAULT_GET_COMMENTS_FOR_TOPIC_LIMIT", 500)
+                _get_value(config_dict, "INSIGHT_ENGINE_DEFAULT_GET_COMMENTS_LIMIT", "DEFAULT_GET_COMMENTS_FOR_TOPIC_LIMIT", 500)
             ),
             default_search_topic_on_platform_limit=int(
                 _get_value(config_dict, "DEFAULT_SEARCH_TOPIC_ON_PLATFORM_LIMIT", 200)
             ),
-            max_search_results_for_llm=int(_get_value(config_dict, "MAX_SEARCH_RESULTS_FOR_LLM", 0)),
+            max_search_results_for_llm=int(_get_value(config_dict, "INSIGHT_ENGINE_MAX_SEARCH_RESULTS_FOR_LLM", "MAX_SEARCH_RESULTS_FOR_LLM", 0)),
             max_high_confidence_sentiment_results=int(
                 _get_value(config_dict, "MAX_HIGH_CONFIDENCE_SENTIMENT_RESULTS", 0)
             ),

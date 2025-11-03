@@ -61,3 +61,37 @@ BOCHA_WEB_SEARCH_API_KEY = "your_api_key"
 # ============================== MindSpider爬虫配置 ==============================
 # DeepSeek API密钥（用于话题提取，申请地址：https://www.deepseek.com/）
 DEEPSEEK_API_KEY = "your_api_key"
+
+
+# ============================== WebDAV备份配置 ==============================
+# WebDAV服务器配置（用于备份和恢复配置，申请地址：https://www.jianguoyun.com/ 或其他WebDAV服务）
+WEBDAV_URL = ""  # 例如："https://dav.jianguoyun.com/dav/"
+WEBDAV_USERNAME = ""
+WEBDAV_PASSWORD = ""
+
+
+# ============================== 高级配置参数 ==============================
+# QueryEngine 高级配置
+QUERY_ENGINE_MAX_REFLECTIONS = 2  # 反思轮次
+QUERY_ENGINE_MAX_SEARCH_RESULTS = 20  # 最大搜索结果数
+QUERY_ENGINE_MAX_CONTENT_LENGTH = 20000  # 最大内容长度
+
+# MediaEngine 高级配置
+MEDIA_ENGINE_MAX_REFLECTIONS = 2  # 反思轮次
+MEDIA_ENGINE_MAX_CONTENT_LENGTH = 20000  # 最大内容长度
+
+# InsightEngine 高级配置
+INSIGHT_ENGINE_MAX_REFLECTIONS = 3  # 反思轮次
+INSIGHT_ENGINE_MAX_CONTENT_LENGTH = 500000  # 最大内容长度
+INSIGHT_ENGINE_DEFAULT_SEARCH_TOPIC_GLOBALLY_LIMIT = 50  # 全局搜索限制（每个表）
+INSIGHT_ENGINE_DEFAULT_GET_COMMENTS_LIMIT = 500  # 评论获取限制
+INSIGHT_ENGINE_MAX_SEARCH_RESULTS_FOR_LLM = 0  # 传给LLM的最大结果数（0表示不限制）
+
+
+# ============================== 情感分析配置 ==============================
+# 情感分析模型配置
+SENTIMENT_ANALYSIS_ENABLED = True  # 是否启用情感分析
+SENTIMENT_MODEL_TYPE = "multilingual"  # 模型类型: multilingual, bert, qwen等
+SENTIMENT_CONFIDENCE_THRESHOLD = 0.8  # 置信度阈值
+SENTIMENT_BATCH_SIZE = 32  # 批处理大小
+SENTIMENT_MAX_SEQUENCE_LENGTH = 512  # 最大序列长度

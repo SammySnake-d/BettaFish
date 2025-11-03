@@ -26,7 +26,20 @@ except ImportError:
 
 
 # INFO：若想跳过情感分析，可手动切换此开关为False
-SENTIMENT_ANALYSIS_ENABLED = True
+# 默认值为True，但会从config.py读取实际配置
+try:
+    import importlib.util
+    from pathlib import Path
+    config_path = Path(__file__).resolve().parents[2] / "config.py"
+    if config_path.exists():
+        spec = importlib.util.spec_from_file_location("config", config_path)
+        config_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(config_module)
+        SENTIMENT_ANALYSIS_ENABLED = getattr(config_module, 'SENTIMENT_ANALYSIS_ENABLED', True)
+    else:
+        SENTIMENT_ANALYSIS_ENABLED = True
+except Exception:
+    SENTIMENT_ANALYSIS_ENABLED = True
 
 def _describe_missing_dependencies() -> str:
     missing = []
